@@ -2,15 +2,24 @@
 nobs = 1000
 alpha = 3
 beta = 3
-Z = rexp(rate = 1, n = nobs) - rexp(rate = 1, n = nobs)
+Z1 = rexp(rate = 1, n = nobs) - rexp(rate = 1, n = nobs)
+Z2 = rbeta(n = nobs,shape1 = alpha, shape2 = beta)
+Z3 = rnorm(nobs)
 
 #domain and true function
-a = min(Z)
-b = max(Z)
+a1 = min(Z1)
+a2 = min(Z2)
+a3 = min(Z3)
+b1 = max(Z1)
+b2 = max(Z2)
+b3 = max(Z3)
 K = 50
-ab = seq(a,b,length.out = K)
-true_function = exp(-abs(ab))/2
-
+ab1 = seq(a1,b1,length.out = K)
+true_function1 = exp(-abs(ab1))/2
+ab2 = seq(a2,b2,length.out = K)
+true_function2 = dbeta(x = ab2, shape1 = alpha, shape2 = beta)
+ab3 = seq(a3,b3,length.out = K)
+true_function3 = dnorm(x = ab3)
 #epanechnikov kernel
 e_kernel <- function(x){
   0.75 * (x <1 & x > -1) * (1 - x^2)
@@ -68,7 +77,6 @@ get_kde <- function(n, h, Kernel, data){
 }
 
 h <- bws_cross_validation(J = criterion, len = 40, Kernel = e_kernel, n = nobs, l = -1e5, u = 1e5, Z = Z )
-kde <- get_kde(Kernel = e_kernel, n = nobs, h = h, data = Z )
-plot(true_function)
-lines(Vectorize(kde)(ab), col = "red")
-lines(true_function)
+kde <- get_kde(Kernel = e_kernel, n = nobs, h = h, data = Z2)
+plot(true_function2)
+lines(Vectorize(kde)(ab2), col = "red")
