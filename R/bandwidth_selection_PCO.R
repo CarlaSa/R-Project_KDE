@@ -110,6 +110,7 @@ criterion <- function(m, data, x, Kernel) {
 #' @param x A double vector of length 1. A calibration constant.
 #' @param data A double vector of the sample data to use.
 #' @return A double vector of length 1. The optimal bandwidth.
+#' @export
 bws_PCO <- function(
                     Kernel = kernels$gaussian,
                     n_obs = 100,
