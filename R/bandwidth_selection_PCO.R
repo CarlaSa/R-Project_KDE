@@ -1,38 +1,39 @@
 source('kernels.R')
+source('rejection_sample.R')
 
-K_h <- function(h, t, test) {
-    test$K(t / h) / h
+K_h <- function(h, t, Kernel) {
+    Kernel(t / h) / h
 }
 
-f_hat <- function(h, X, x, test) {
-    sum(K_h(h, X-x, test)) / test$n
+f_hat <- function(h, data, v, n_obs, Kernel) {
+    sum(K_h(h, data-v, Kernel)) / n_obs
 }
 
-B_hat <- function(h, m, X, test) {
+B_hat <- function(h, m, data, n_obs, Kernel) {
     # comparison to overfitting
-    L2norm_squared(sapplify(function(x) {
-                                f_hat(h, X, x, test) -
-                                    f_hat(m, X, x, test)
+    L2norm_squared(sapplify(function(v) {
+                                f_hat(h, data, v, n_obs, Kernel) -
+                                    f_hat(m, data, v, n_obs, Kernel)
 })) -
              # penalized
              L2norm_squared(sapplify(function(t) {
-                                         K_h(h, t, test) -
-                                             K_h(m, t, test)
-})) / test$n
+                                         K_h(h, t, Kernel) -
+                                             K_h(m, t, Kernel)
+})) / n_obs
 }
 
-V_hat <- function(h, test) {
-    test$x * L2norm_squared(test$K) / (test$n * h)
+V_hat <- function(h, x, n_obs, Kernel) {
+    x * L2norm_squared(Kernel) / (n_obs * h)
 }
 
-Risk_hat <- function(h, m, X, test) {
-    B_hat(h, m, X, test) +
-        V_hat(h, test)
+Risk_hat <- function(h, m, data, x, n_obs, Kernel) {
+    B_hat(h, m, data, n_obs, Kernel) +
+        V_hat(h, x, n_obs, Kernel)
 }
 
 sapplify <- function(f) {
-    function(x) {
-        sapply(x, f)
+    function(a) {
+        sapply(a, f)
     }
 }
 
@@ -44,14 +45,24 @@ L2norm <- function(f) {
     sqrt(L2norm_squared(f))
 }
 
-h_hat <- function(
-                  K = kernels$gaussian,
-                  n = 100, # sample size
-                  Hn = 100, # number of bandwidths
-                  possible_bandwidths = 1 / 1:test$Hn,
-                  distrib = function(n) rnorm(n, 0, 1)
-                  ) {
-    m <- min(possible_bandwidths)
-    X <- distrib(n)
+criterion <- function(m, data = rejection_sampler(n_obs, Kernel), x, n_obs, Kernel) {
+    force(m)
+    force(x)
+    force(n_obs)
+    force(Kernel)
+    force(data)
+    function(bandwidths) {
+        sapply(bandwidths, function(h) Risk_hat(h, m, data, x, n_obs, Kernel))
+    }
 }
 
+bws_PCO <- function(
+                    Kernel = kernels$gaussian,
+                    n_obs = 100,
+                    bandwidths = 1 / 1:100,
+                    x = 1,
+                    data = rejection_sampler(n_obs, Kernel)
+                    ) {
+    risks <- criterion(min(bandwidths), data, x, n_obs, Kernel)(bandwidths)
+    bandwidths[which.min(risks)]
+}
