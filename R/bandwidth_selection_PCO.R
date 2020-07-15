@@ -1,5 +1,6 @@
 source('kernels.R')
 source('rejection_sample.R')
+source('L2norm.R')
 
 K_h <- function(h, t, Kernel) {
     Kernel(t / h) / h
@@ -35,14 +36,6 @@ sapplify <- function(f) {
     function(a) {
         sapply(a, f)
     }
-}
-
-L2norm_squared <- function(f) {
-    integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)$value
-}
-
-L2norm <- function(f) {
-    sqrt(L2norm_squared(f))
 }
 
 criterion <- function(m, data = rejection_sample(n_obs, Kernel), x, n_obs, Kernel) {
