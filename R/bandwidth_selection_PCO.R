@@ -21,12 +21,12 @@ kernels <- c(
 )
 kernels$parabolic <- kernels$epanechnikov
 
-K_h <- function(h, X, x, test) {
-    test$K((X-x) / h) / h
+K_h <- function(h, t, test) {
+    test$K(t / h) / h
 }
 
 f_hat <- function(h, X, x, test) {
-    sum(K_h(h, X, X-x, test)) / test$n
+    sum(K_h(h, X-x, test)) / test$n
 }
 
 B_hat <- function(h, m, X, test) {
@@ -36,9 +36,9 @@ B_hat <- function(h, m, X, test) {
                                     f_hat(m, X, x, test)
 })) -
              # penalized
-             L2norm_squared(sapplify(function(x) {
-                                         K_h(h, X, x, test) -
-                                             K_h(m, X, x, test)
+             L2norm_squared(sapplify(function(t) {
+                                         K_h(h, t, test) -
+                                             K_h(m, t, test)
 })) / test$n
 }
 
@@ -58,7 +58,7 @@ sapplify <- function(f) {
 }
 
 L2norm_squared <- function(f) {
-    integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)
+    integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)$value
 }
 
 L2norm <- function(f) {
