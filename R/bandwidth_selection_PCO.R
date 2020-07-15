@@ -40,7 +40,7 @@ B_hat <- function(h, m, data, Kernel) {
              L2norm_squared(sapplify(function(t) {
                                          K_h(h, t, Kernel) -
                                              K_h(m, t, Kernel)
-})) / n_obs
+})) / length(data)
 }
 
 #' Estimator for the Variance Term.
