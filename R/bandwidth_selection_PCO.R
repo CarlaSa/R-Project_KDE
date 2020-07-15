@@ -42,13 +42,13 @@ B_hat <- function(h, m, X, test) {
 })) / test$n
 }
 
-V_hat <- function(h, x, test) {
-    x * L2norm_squared(test$K) / (test$n * h)
+V_hat <- function(h, test) {
+    test$x * L2norm_squared(test$K) / (test$n * h)
 }
 
-Risk_hat <- function(h, m, X = X, x = x, test = test) {
+Risk_hat <- function(h, m, X, test) {
     B_hat(h, m, X, test) +
-        V_hat(h, x, test)
+        V_hat(h, test)
 }
 
 sapplify <- function(f) {
