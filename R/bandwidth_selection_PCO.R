@@ -45,7 +45,7 @@ L2norm <- function(f) {
     sqrt(L2norm_squared(f))
 }
 
-criterion <- function(m, data = rejection_sampler(n_obs, Kernel), x, n_obs, Kernel) {
+criterion <- function(m, data = rejection_sample(n_obs, Kernel), x, n_obs, Kernel) {
     force(m)
     force(x)
     force(n_obs)
@@ -61,7 +61,7 @@ bws_PCO <- function(
                     n_obs = 100,
                     bandwidths = 1 / 1:100,
                     x = 1,
-                    data = rejection_sampler(n_obs, Kernel)
+                    data = rejection_sample(n_obs, Kernel)
                     ) {
     risks <- criterion(min(bandwidths), data, x, n_obs, Kernel)(bandwidths)
     bandwidths[which.min(risks)]
