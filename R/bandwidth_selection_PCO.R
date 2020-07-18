@@ -23,6 +23,18 @@ f_hat <- function(h, data, v, Kernel) {
     sum(K_h(h, data-v, Kernel)) / length(data)
 }
 
+#' Get a fix KDE.
+#'
+#' @param h A double vector of length 1. The bandwidth.
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @return A double vector of length 1.
+get_kde <- function(h, Kernel, data) {
+    function(x) {
+        sum(K_h(h, data-x, Kernel)) / length(data)
+    }
+}
+
 #' Estimator for the Bias Term.
 #'
 #' @param h A double vector of length 1. The bandwidth.
