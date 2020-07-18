@@ -118,21 +118,18 @@ criterion <- function(m, data, x, Kernel) {
 #'
 #' Find the optimal value for the bandwidth h.
 #'
+#' @param data A double vector of the sample data to use.
 #' @param Kernel A real function. The kernel.
-#' @param n_obs A double vector of length 1. The number of observations.
 #' @param bandwidths A double vector containing the bandwidths to try.
 #' @param x A double vector of length 1. A calibration constant.
-#' @param data A double vector of the sample data to use.
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bws_PCO <- function(
+                    data = rejection_sample(1e4, Kernel),
                     Kernel = kernels$gaussian,
-                    n_obs = 100,
                     bandwidths = seq(from = 0.01, to = 1, length.out = 100),
-                    x = 1,
-                    data = rejection_sample(n_obs, Kernel)
+                    x = 1
                     ) {
-    stopifnot('n_obs must equal length(data)' = n_obs == length(data))
     risks <- criterion(min(bandwidths), data, x, Kernel)(bandwidths)
     bandwidths[which.min(risks)]
 }
