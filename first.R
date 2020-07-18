@@ -1,32 +1,27 @@
-# simulate data
-N = 1000
-X = rnorm(N)
+source('R/bandwidth_selection_PCO.R', chdir=T)
 
-a = min(X)
-b = max(X)
+n_obs <- 1000
+f_real <- kernels$gaussian
+data <- rejection_sample(n_obs, f_real)
 
-Xplot = seq(a,b, length.out = 100)
-f_real = exp(-0.5 * Xplot^2)/sqrt(2*pi)
+lower <- min(data)
+upper <- max(data)
 
-h = 1
+x_plot <- seq(lower, upper, length.out = 100)
+h <- 1
 
-fest = rep(0, 100)
-fest2 = rep(0,100)
-Mat = matrix(0, nrow =100, ncol = N)
-EPA = matrix(0, nrow =100, ncol = N)
+KDE_gaussian <- get_kde(h, kernels$gaussian, data)
+KDE_epanechnikov <- get_kde(h, kernels$epanechnikov, data)
 
-for (i in 1:100){
-  for (j in 1:N){
-    U = (Xplot[i]- X[j]) / h
-    Mat[i,j] = exp(-0.5 * U^2) / sqrt(2*pi)/ h
-    TT = abs((Xplot[i]- X[j])/h) <1
-    EPA[i,j] = 0.75 * (1-U^2) * TT/h
-  }
-}
+kde_gaussian_plot <- KDE_gaussian(x_plot)
+kde_epanechnikov_plot <- KDE_epanechnikov(x_plot)
 
-fest = apply(Mat, 1, mean)
-fest2 = apply(EPA, 1, mean)
-
-plot(Xplot, f_real)
-lines(Xplot, fest, col = "red")
-lines(Xplot, fest2, col = "green")
+plot(x_plot, f_real(x_plot), type = 'l')
+lines(x_plot, kde_gaussian_plot, col = 2)
+lines(x_plot, kde_epanechnikov_plot, col = 3)
+legend('topleft',
+       c('true function',
+         'Gaussian KDE',
+         'Epanechnikov KDE'),
+       col = 1:3,
+       lwd = 1)
