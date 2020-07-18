@@ -3,17 +3,19 @@ source('L2norm.R')
 source('KDE.R')
 source('tools.R')
 
-# Notation rule of thumb:
+# standard order of the function parameters:
 # arg. x, h, Kernel, data, n_obs, m, const. x
 
-#' Estimator for the Bias Term.
+#' Estimator for the Bias Term
+#'
+#' B_hat
 #'
 #' @param h A double vector of length 1. The bandwidth.
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @return A double vector of length 1.
-B_hat <- function(h, Kernel, data, m) {
+est_bias <- function(h, Kernel, data, m) {
     # comparison to overfitting
     L2norm_squared(sapplify(function(x) {
         kde(x, h, Kernel, data) -
@@ -28,16 +30,20 @@ B_hat <- function(h, Kernel, data, m) {
 
 #' Estimator for the Variance Term.
 #'
+#' V_hat
+#'
 #' @param h A double vector of bandwidths.
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param x A double vector of length 1. A calibration constant.
 #' @return A double vector.
-V_hat <- function(h, Kernel, n_obs, x) {
+est_variance <- function(h, Kernel, n_obs, x) {
     x * L2norm_squared(Kernel) / (n_obs * h)
 }
 
 #' Estimator for the Risk.
+#'
+#' Risk_hat
 #'
 #' @param h A double vector of length 1. The bandwidth.
 #' @param Kernel A real function. The kernel.
@@ -45,10 +51,10 @@ V_hat <- function(h, Kernel, n_obs, x) {
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param x A double vector of length 1. A calibration constant for the variance term.
 #' @return A double vector of length 1.
-Risk_hat <- function(h, Kernel, data, m, x) {
+est_risk <- function(h, Kernel, data, m, x) {
     n_obs <- length(data)
-    B_hat(h, Kernel, data, m) +
-        V_hat(h, Kernel, n_obs, x)
+    est_bias(h, Kernel, data, m) +
+        est_variance(h, Kernel, n_obs, x)
 }
 
 #' Optimisation criterion for bandwidth selection using PCO.
@@ -68,7 +74,7 @@ criterion <- function(Kernel, data, m, x) {
     force(m)
     force(x)
     function(bandwidths) {
-        sapply(bandwidths, function(h) Risk_hat(h, Kernel, data, m, x))
+        sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, x))
     }
 }
 
