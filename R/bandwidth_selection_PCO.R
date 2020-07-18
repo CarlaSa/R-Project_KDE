@@ -90,7 +90,7 @@ criterion <- function(Kernel, data, m, v) {
 #' @export
 bws_PCO <- function(
                     Kernel = kernels$gaussian,
-                    data = rejection_sample(1e4, Kernel),
+                    data,
                     bandwidths = seq(from = 0.01, to = 1, length.out = 100),
                     v = 1
                     ) {
