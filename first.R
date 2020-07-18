@@ -1,4 +1,5 @@
-source('R/bandwidth_selection_PCO.R', chdir=T)
+source('R/KDE.R', chdir=T)
+source('R/rejection_sample.R', chdir=T)
 
 n_obs <- 1000
 f_real <- kernels$gaussian
