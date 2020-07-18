@@ -2,7 +2,7 @@ source('kernels.R')
 source('rejection_sample.R')
 source('L2norm.R')
 
-#' K_h as defined by Goldenshluger & Lepski.
+#' Scaled kernel.
 #'
 #' @param h A double vector of length 1. The bandwidth.
 #' @param t A double vector. The argument.
