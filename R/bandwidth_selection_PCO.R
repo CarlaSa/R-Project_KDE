@@ -4,7 +4,7 @@ source('KDE.R')
 source('tools.R')
 
 # standard order of the function parameters:
-# arg. x, h, Kernel, data, n_obs, m, const. x
+# x, h, Kernel, data, n_obs, m, v
 
 #' Estimator for the Bias Term
 #'
@@ -35,10 +35,10 @@ est_bias <- function(h, Kernel, data, m) {
 #' @param h A double vector of bandwidths.
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
-#' @param x A double vector of length 1. A calibration constant.
+#' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
-est_variance <- function(h, Kernel, n_obs, x) {
-    x * L2norm_squared(Kernel) / (n_obs * h)
+est_variance <- function(h, Kernel, n_obs, v) {
+    v * L2norm_squared(Kernel) / (n_obs * h)
 }
 
 #' Estimator for the Risk.
@@ -49,12 +49,12 @@ est_variance <- function(h, Kernel, n_obs, x) {
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
-#' @param x A double vector of length 1. A calibration constant for the variance term.
+#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, m, x) {
+est_risk <- function(h, Kernel, data, m, v) {
     n_obs <- length(data)
     est_bias(h, Kernel, data, m) +
-        est_variance(h, Kernel, n_obs, x)
+        est_variance(h, Kernel, n_obs, v)
 }
 
 #' Optimisation criterion for bandwidth selection using PCO.
@@ -65,16 +65,16 @@ est_risk <- function(h, Kernel, data, m, x) {
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
-#' @param x A double vector of length 1. A calibration constant.
+#' @param v A double vector of length 1. A calibration constant.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
-criterion <- function(Kernel, data, m, x) {
+criterion <- function(Kernel, data, m, v) {
     force(Kernel)
     force(data)
     force(m)
-    force(x)
+    force(v)
     function(bandwidths) {
-        sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, x))
+        sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, v))
     }
 }
 
@@ -85,15 +85,15 @@ criterion <- function(Kernel, data, m, x) {
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param bandwidths A double vector containing the bandwidths to try.
-#' @param x A double vector of length 1. A calibration constant.
+#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bws_PCO <- function(
                     Kernel = kernels$gaussian,
                     data = rejection_sample(1e4, Kernel),
                     bandwidths = seq(from = 0.01, to = 1, length.out = 100),
-                    x = 1
+                    v = 1
                     ) {
-    risks <- criterion(Kernel, data, min(bandwidths), x)(bandwidths)
+    risks <- criterion(Kernel, data, min(bandwidths), v)(bandwidths)
     bandwidths[which.min(risks)]
 }
