@@ -1,4 +1,5 @@
 source('R/bandwidth_selection_PCO.R', chdir=T)
+source('R/rejection_sample.R', chdir=T)
 
 ## Gaussian
 
