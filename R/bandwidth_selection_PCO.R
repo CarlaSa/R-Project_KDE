@@ -3,8 +3,16 @@ source('L2norm.R')
 source('KDE.R')
 source('tools.R')
 
-# standard order of the function parameters:
-# x, h, Kernel, data, n_obs, m, v
+# conventional order of the function parameters:
+#
+#      x    (function argument),
+#      h    (bandwidth),
+# Kernel    (kernel function, formerly known as K),
+#   data    (sample data, formerly known as X),
+#  n_obs    (number of observations, formerly known as N),
+#      m    (minimum bandwidth from the set of bandwidths to test),
+#      v    (calibration constant to weigh the variance term,
+#            formerly known as x)
 
 #' Estimator for the Bias Term
 #'
