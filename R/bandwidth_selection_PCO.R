@@ -30,8 +30,10 @@ f_hat <- function(h, data, v, Kernel) {
 #' @param data A double vector of the sample data to use.
 #' @return A double vector of length 1.
 get_kde <- function(h, Kernel, data) {
-    function(x) {
-        sum(K_h(h, data-x, Kernel)) / length(data)
+    function(v) {
+        sapply(v, function(x)
+            sum(K_h(h, data-x, Kernel)) / length(data)
+            )
     }
 }
 
