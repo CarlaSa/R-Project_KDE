@@ -114,10 +114,11 @@ criterion <- function(m, data, x, Kernel) {
 bws_PCO <- function(
                     Kernel = kernels$gaussian,
                     n_obs = 100,
-                    bandwidths = 1 / 1:100,
+                    bandwidths = seq(from = 0.01, to = 1, length.out = 100),
                     x = 1,
                     data = rejection_sample(n_obs, Kernel)
                     ) {
+    stopifnot('n_obs must equal length(data)' = n_obs == length(data))
     risks <- criterion(min(bandwidths), data, x, Kernel)(bandwidths)
     bandwidths[which.min(risks)]
 }
