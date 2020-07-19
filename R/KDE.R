@@ -29,7 +29,7 @@ kde <- function(x, h, Kernel, data) {
 #' @return A double vector of length 1.
 #' @export
 get_kde <- function(h, Kernel, data) {
-    function(v) {
-        sapply(v, kde, h, Kernel, data)
+    function(x) {
+        sapply(x, kde, h, Kernel, data)
     }
 }
