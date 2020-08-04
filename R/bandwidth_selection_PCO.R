@@ -76,7 +76,7 @@ est_risk <- function(h, Kernel, data, m, v) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
-criterion <- function(Kernel, data, m, v) {
+criterion_PCO <- function(Kernel, data, m, v = 1) {
     force(Kernel)
     force(data)
     force(m)
@@ -86,22 +86,3 @@ criterion <- function(Kernel, data, m, v) {
     }
 }
 
-#' Bandwidth selection using PCO.
-#'
-#' Find the optimal value for the bandwidth h.
-#'
-#' @param Kernel A real function. The kernel.
-#' @param data A double vector of the sample data to use.
-#' @param bandwidths A double vector containing the bandwidths to try.
-#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
-#' @return A double vector of length 1. The optimal bandwidth.
-#' @export
-bws_PCO <- function(
-                    Kernel = kernels$gaussian,
-                    data,
-                    bandwidths = seq(from = 0.01, to = 1, length.out = 100),
-                    v = 1
-                    ) {
-    risks <- criterion(Kernel, data, min(bandwidths), v)(bandwidths)
-    bandwidths[which.min(risks)]
-}
