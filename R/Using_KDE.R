@@ -58,13 +58,17 @@ kernels$parabolic <- kernels$epanechnikov
 
 # get bandwidth #########
 
-bandwidths <- c(
+h <- c(
   # cross validation
-  h_cv <- NA, 
+  cv <- NA, 
   # Goldenshluger-Lepski
-  h_gl <- NA,
-  h_pco <- NA
+  gl <- NA,
+  pco <- NA
 )
+
+kde1 = get_kde(n = nobs, h = h$cv, Kernel = kernels$epanechnikov, data = Z1)
+
+
 # plot #####
 
 
