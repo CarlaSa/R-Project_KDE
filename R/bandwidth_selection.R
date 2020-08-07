@@ -18,5 +18,5 @@ bandwidth_selection <- function(
                     upper = 1e1,
                     ...
                     ) {
-    optimise(criterion(Kernel, data, lower, ...), lower = lower, upper = upper)$minimum
+    optimise(criterion_getter(Kernel, data, lower, ...), lower = lower, upper = upper)$minimum
 }
