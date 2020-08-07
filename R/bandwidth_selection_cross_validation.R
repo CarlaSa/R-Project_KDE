@@ -54,6 +54,7 @@ criterion <-function(h, Kernel, Z ,n, l, u){
     #     break
     #   }
     # }
+     
 
     #upper boundary
      upp = Inf
