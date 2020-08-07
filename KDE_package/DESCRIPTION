@@ -1,0 +1,20 @@
+Package: KDE
+Title: Implimenting the Kernel Desity Estimator with different methods for bandwith finding
+Discription: TODO
+Version: 0.0
+Authors@R:
+    c(person( given = "Charlotte",
+              family = "Boys", 
+              email = "", 
+              role = c("aut")),
+      person( given = "Leon",
+              family = "Patzig", 
+              email = "",
+              role = c("aut")),
+      person( given = "Carla",
+              family = "Sagebiel", 
+              email = "carlachristin@googlemail.com", 
+              role = c("aut", "cre"))
+            )
+Imports:
+  stringr
