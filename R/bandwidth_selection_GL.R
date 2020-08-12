@@ -1,82 +1,130 @@
-#TODO: vectorize the code
+source('kernels.R')
+source('L2norm.R')
+source('convolution.R')
+source('KDE.R')
+source('tools.R')
 
-####
-# Simulating the model
-####
-n <- 1000
+# conventional order of the function parameters:
+#
+#      x    (function argument),
+#      h    (bandwidth),
+# Kernel    (kernel function, formerly known as K),
+#   data    (sample data, formerly known as X),
+#  n_obs    (number of observations, formerly known as N),
+# bandwidths    (the set of bandwidths to test),
+#      c    (calibration constant to weigh the variance term,
+#            in the estimator for the bias term)
+#      v    (calibration constant to weigh the variance term,
+#            formerly known as x)
 
-# Parameters for gamma or beta distributions:
-alpha <-  3 # In case we want to use gamma
-beta <- 3  #  or beta distributions
-
-# Generating data from the chosen distribution (normal, mu=0, sigma=1):
-Z <-  rnorm(n) # Can use normal, gamma or beta
-
-
-# Intervals on which to plot the data etc.:
-K <- 50
-x_points <- seq(min(Z),max(Z), length.out = K)
-
-
-# The true density function (for the normal distribution):
-f_real <- exp(-0.5 * x_points^2)/sqrt(2*pi)
-
-# The number of estimates:
-M <- 40
-
-f_estimate <- matrix(0, nrow = M, ncol = K)
-f_hat_prime <- array(0, c(M, M, K)) # an intermediate term
-norm <- matrix(0, nrow=M, ncol=M)
-# TODO: What does A do?
-A <- rep(0, M)#matrix(0, nrow=M, ncol=1)
-
-#####
-# Computation of V(h) for h= 1/M,...,M/M
-#####
-kappa <- 1.2
-V <- kappa * (M/(1:M))/2/sqrt(pi)/n
-
-for(k in 1:M){
-  bandwidth <- k/M
-  # Update 18/7: t(x_points) needed to make dimensions match
-  # (Matlab's linspace and R's seq output objects of different dimensions)
-  MKdens <- dnorm((kronecker(matrix(1,1,K), Z) - kronecker(matrix(1, n, 1), t(x_points)))/bandwidth)
-  f_estimate[k,] <- apply(MKdens,2,mean)/bandwidth
-  for (j in 1:M){
-    hprime <- j/M
-    #####
-    # Convolution of gaussian kernels
-    #####
-    another <- dnorm(kronecker(matrix(1,1,K), Z) - kronecker(matrix(1, n, 1), t(x_points)), 0, sqrt(bandwidth^2 + hprime^2))
-    #####
-    # Computation of the estimator f_{h,h'}
-    #####
-    f_hat_prime[k,j,] <- apply(another,2,mean) #mean(another,1)
-  }
-  }
-# Carla and Leon have implemented an lnorm function for this part:
-for (k in 1:M){
-  for (l in 1:M){
-    for (j in 1:K){
-      norm[k,l] <- norm[k,l] + (f_hat_prime[k,l,j] - f_estimate[l,j])^2 * (b-a)/K
+#' Double kernel estimator.
+#'
+#' @param h A double vector of length 1. A bandwidth.
+#' @param h_prime A double vector of length 1. Another bandwidth.
+#' @param data A double vector of the sample data to use.
+#' @return A function. The double kernel estimator.
+get_double_kernel_estimator <- function(h, h_prime, Kernel, data) {
+    kde_h <- get_kde(h, Kernel, data)
+    Kernel_h_prime <- function(x) {
+        sapply(x, scaled_kernel, h, Kernel)
     }
-  }
-  }
+    convolution(Kernel_h_prime, kde_h)
+}
 
-for (k in 1:M){
-  A[[k]] <- max(max(norm[k,]-2*V, 0))
-  }
+#' Estimator for the Bias Term.
+#'
+#' B_hat
+#'
+#' @param h A double vector of length 1. The bandwidth.
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @param interval A double vector. The interval of h_prime bandwidths to test.
+#' @param c A double vector of length 1. A calibration constant.
+#' @param v A double vector of length 1. A calibration constant.
+#' @return A double vector of length 1.
+est_bias <- function(h, Kernel, data, interval, c, v) {
+    n_obs <- length(data)
+    optimise(
+        sapplify(function(h_prime) {
+            kde_h_prime <- get_kde(h_prime, Kernel, data)
+            double_kernel_estimator <- get_double_kernel_estimator(h, h_prime, Kernel, data)
+            L2norm_squared(function(x) {
+                kde_h_prime(x) - double_kernel_estimator(x)
+            }) -
+               c * est_variance(h_prime, Kernel, n_obs, v)
+        }
+    ), interval, maximum = TRUE)
+}
 
-########
-# Bandwidth selection
-########
+#' Estimator for the Variance Term.
+#'
+#' V_hat
+#'source('R/bandwidth_selection.R', chdir=T)
+#' @param h A double vector of bandwidths.
+#' @param Kernel A real function. The kernel.
+#' @param n_obs A double vector of length 1. The number of observations.
+#' @param v A double vector of length 1. A calibration constant.
+#' @return A double vector.
+est_variance <- function(h, Kernel, n_obs, v) {
+    v * L2norm_squared(Kernel) / (n_obs * h)
+}
 
-# We don't need to transpose V because it's already in the right dimensions.
-# Why choose this minimum value for our index? It doesn't seem to give an optimum estimate.
-kc <- which.min(A+V) # this index gives k where bandwidth h = k/M
-final_estimate <- f_estimate[kc,]
+#' Estimator for the Risk.
+#'
+#' Risk_hat
+#'
+#' @param h A double vector of length 1. The bandwidth.
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @param interval A double vector. The interval of h_prime bandwidths to test.
+#' @param m A double vector of length 1. The smallest bandwidth.
+#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
+#' @return A double vector of length 1.
+est_risk <- function(h, Kernel, data, interval, c, v) {
+    n_obs <- length(data)
+    est_bias(h, Kernel, data, bandwidths, c, v) +
+        est_variance(h, Kernel, n_obs, v)
+}
 
-# Graphical representation
+#' Optimisation criterion for bandwidth selection using PCO.
+#'
+#' The Estimator for the Risk with all parameters fixed but the bandwidth h.
+#' Minimise it to find the optimal value for h.
+#'
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @param c A double vector of length 1. A calibration constant.
+#' @param v A double vector of length 1. A calibration constant.
+#' @return A vectorised single-parameter function. The PCO bandwidth selection
+#' optimisation criterion.
+criterion_GL <- function(Kernel, data, interval, c, v) {
+    force(Kernel)
+    force(data)
+    force(c)
+    force(v)
+    function(bandwidths) {
+        sapply(bandwidths, function(h) est_risk(h, Kernel, data, interval, c, v))
+    }
+}
 
-lines(x_points, f_real, col="blue")
-lines(x_points, f_estimate[kc,], col = "red")
+#' Bandwidth selection using the Goldenshluger-Lepski method.
+#'
+#' Find the optimal value for the bandwidth h.
+#'
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @param bandwidths A double vector containing the bandwidths to try.
+#' @param c A double vector of length 1. A calibration constant for weighing the variance term.
+#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
+#' @return A double vector of length 1. The optimal bandwidth.
+#' @export
+bws_GL <- function(
+                    Kernel = kernels$gaussian,
+                    data,
+                    bandwidths = seq(from = 0.01, to = 1, length.out = 100),
+                    c = 1,
+                    v = 1
+                    ) {
+    risks <- criterion(Kernel, data, c, v)(bandwidths)
+    bandwidths[which.min(risks)]
+}
