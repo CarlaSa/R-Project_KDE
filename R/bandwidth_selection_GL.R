@@ -28,9 +28,7 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data) {
     Kernel_h_prime <- function(x) {
         sapply(x, scaled_kernel, h, Kernel)
     }
-    function(x) {
-        convolution(Kernel_h_prime, kde_h)
-    }
+    convolution(Kernel_h_prime, kde_h)
 }
 
 #' Estimator for the Bias Term.
@@ -40,29 +38,28 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data) {
 #' @param h A double vector of length 1. The bandwidth.
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
-#' @param bandwidths A double vector. The pool of bandwidths to test.
+#' @param interval A double vector. The interval of h_prime bandwidths to test.
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector of length 1.
-est_bias <- function(h, Kernel, data, bandwidths, c, v) {
+est_bias <- function(h, Kernel, data, interval, c, v) {
     n_obs <- length(data)
-    max(
-        sapply(bandwidths, function(h_prime) {
+    optimise(
+        sapplify(function(h_prime) {
             kde_h_prime <- get_kde(h_prime, Kernel, data)
             double_kernel_estimator <- get_double_kernel_estimator(h, h_prime, Kernel, data)
             L2norm_squared(function(x) {
                 kde_h_prime(x) - double_kernel_estimator(x)
             }) -
-               c * V_hat(h_prime, Kernel, n_obs, v)
-        })
-    )
-    
+               c * est_variance(h_prime, Kernel, n_obs, v)
+        }
+    ), interval, maximum = TRUE)
 }
 
 #' Estimator for the Variance Term.
 #'
 #' V_hat
-#'
+#'source('R/bandwidth_selection.R', chdir=T)
 #' @param h A double vector of bandwidths.
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
@@ -79,10 +76,11 @@ est_variance <- function(h, Kernel, n_obs, v) {
 #' @param h A double vector of length 1. The bandwidth.
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
+#' @param interval A double vector. The interval of h_prime bandwidths to test.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, bandwidths, c, v) {
+est_risk <- function(h, Kernel, data, interval, c, v) {
     n_obs <- length(data)
     est_bias(h, Kernel, data, bandwidths, c, v) +
         est_variance(h, Kernel, n_obs, v)
@@ -99,13 +97,13 @@ est_risk <- function(h, Kernel, data, bandwidths, c, v) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
-criterion <- function(Kernel, data, c, v) {
+criterion_GL <- function(Kernel, data, interval, c, v) {
     force(Kernel)
     force(data)
     force(c)
     force(v)
     function(bandwidths) {
-        sapply(bandwidths, function(h) est_risk(h, Kernel, data, bandwidths, c, v))
+        sapply(bandwidths, function(h) est_risk(h, Kernel, data, interval, c, v))
     }
 }
 
