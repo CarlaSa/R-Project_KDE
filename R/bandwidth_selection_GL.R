@@ -86,45 +86,25 @@ est_risk <- function(h, Kernel, data, bandwidths, c, v) {
         est_variance(h, Kernel, n_obs, v)
 }
 
-#' Optimisation criterion for bandwidth selection using PCO.
+#' Optimisation criterion for bandwidth selection using the Goldenshluger-Lepski method.
 #'
 #' The Estimator for the Risk with all parameters fixed but the bandwidth h.
 #' Minimise it to find the optimal value for h.
 #'
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
+#' @param bandwidths A double vector containing the bandwidths to try.
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
-#' @return A vectorised single-parameter function. The PCO bandwidth selection
+#' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-criterion_GL <- function(Kernel, data, bandwidths, c, v) {
+get_criterion_GL <- function(Kernel, data, bandwidths, c = 1, v = 1) {
     force(Kernel)
     force(data)
+    force(bandwidths)
     force(c)
     force(v)
     function(h_vals) {
         sapply(h_vals, function(h) est_risk(h, Kernel, data, bandwidths, c, v))
     }
-}
-
-#' Bandwidth selection using the Goldenshluger-Lepski method.
-#'
-#' Find the optimal value for the bandwidth h.
-#'
-#' @param Kernel A real function. The kernel.
-#' @param data A double vector of the sample data to use.
-#' @param bandwidths A double vector containing the bandwidths to try.
-#' @param c A double vector of length 1. A calibration constant for weighing the variance term.
-#' @param v A double vector of length 1. A calibration constant for weighing the variance term.
-#' @return A double vector of length 1. The optimal bandwidth.
-#' @export
-bws_GL <- function(
-                    Kernel = kernels$gaussian,
-                    data,
-                    bandwidths = seq(from = 0.01, to = 1, length.out = 100),
-                    c = 1,
-                    v = 1
-                    ) {
-    risks <- criterion(Kernel, data, c, v)(bandwidths)
-    bandwidths[which.min(risks)]
 }
