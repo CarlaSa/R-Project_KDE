@@ -1,5 +1,50 @@
 source('kernels.R')
 
+#' Constructor of a helper (distribution) object for rejection sampling.
+#'
+#' A helper distribution is a distribution function which has an
+#' attribute 'density' which is a probability density function.
+#' It is used for rejection sampling.
+#'
+#' @param distribution A function. A distribution function.
+#' Must not have any non-optional parameters. Must return a double vector
+#' of length 1 (single sample at once) when called without parameters.
+#' @param density A function. The corresponding
+#' probability density function to distribution.
+#' @return A helper object composed of the distribution and the density functions.
+#' @export
+helper <- function(distribution, density) {
+    stopifnot('distribution must be a function' = is.function(distribution))
+    stopifnot('density must be a function' = is.function(density))
+    H <- distribution
+    attr(H, 'density') <- density
+    class(H) <- 'helper'
+    H
+}
+
+#' Validation function for helper (distribution) objects for rejection sampling.
+#'
+#' @param object An object. This object is validated to be a helper object.
+#' @export A logical value.
+is_helper <- function(object) {
+    if(!(class(object) == 'helper' &&
+            is.function(object) &&
+            is.function(attr(object, 'density'))))
+        return(FALSE)
+    distribution <- object
+    sample <- distribution()
+    density <- attr(object, 'density')
+
+}
+
+#' Helper distributions for rejection sampling.
+#'
+#' @export
+helpers <- list(
+     uniform = helper(function() runif(1, -1, 1), kernels$rectangular),
+     normal = helper(function() rnorm(1, 0, 1), kernels$gaussian)
+)
+
 #' Rejection sampling.
 #'
 #' Generate observations from an unknown distribution with a known density
@@ -7,21 +52,19 @@ source('kernels.R')
 #'
 #' @param n_obs An integer vector of length 1. The number of observations.
 #' @param f A probability density function to simulate observations from.
-#' @param helper_distribution A helper distribution function.
-#' @param helper_density A real function. The probability density function of the Y
-#' distribution.
+#' @param helper A helper (distribution) object.
 #' @param n_iter An integer vector of length 1. A calibrating constant. The
 #' algorithm will take an average of n_iter iterations to obtain a sample.
 #' @return A double vector of length n_obs. The observations.
 rejection_sample <- function(n_obs,
                              f,
-                             helper_distribution = function() rnorm(1, 0, 1),
-                             helper_density = kernels$gaussian,
+                             helper = helpers$normal,
                              n_iter = 10
                             ) {
+    helper_density <- attr(helper, 'density')
     sapply(seq(n_obs), function(i) {
         while (TRUE) {
-            y <- helper_distribution()
+            y <- helper()
             u <- runif(1, 0, 1)
             if (u < f(y) / n_iter / helper_density(y))
                 return(y)
