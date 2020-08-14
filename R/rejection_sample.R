@@ -9,8 +9,10 @@ source('kernels.R')
 #' @param distribution A function. A distribution function.
 #' Must not have any non-optional parameters. Must return a double vector
 #' of length 1 (single sample at once) when called without parameters.
-#' @param density A function. The corresponding
-#' probability density function to distribution.
+#' @param density A function. The corresponding probability density
+#' function to the distribution. Must accept a double vector as a
+#' parameter. Must return a double vector of the same length.
+#' (Vectorisation is not required.)
 #' @return A helper object composed of the distribution and the density functions.
 #' @export
 helper <- function(distribution, density) {
@@ -25,7 +27,8 @@ helper <- function(distribution, density) {
 #' Validation function for helper (distribution) objects for rejection sampling.
 #'
 #' @param object An object. This object is validated to be a helper object.
-#' @export A logical value.
+#' @return A logical value.
+#' @export
 is_helper <- function(object) {
     if(!(class(object) == 'helper' &&
             is.function(object) &&
@@ -34,7 +37,14 @@ is_helper <- function(object) {
     distribution <- object
     sample <- distribution()
     density <- attr(object, 'density')
-
+    density_at_sample <- density(sample)
+    is.atomic(sample) &&
+        is.double(sample) &&
+        length(sample) == 1 &&
+        density_at_sample > 0 &&
+        is.atomic(density_at_sample) &&
+        is.double(density_at_sample) &&
+        length(density_at_sample) == 1
 }
 
 #' Helper distributions for rejection sampling.
