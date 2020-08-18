@@ -1,5 +1,3 @@
-source('kernels.R')
-
 #' Constructor of a helper (distribution) object for rejection sampling.
 #'
 #' A helper distribution is a distribution function which has an

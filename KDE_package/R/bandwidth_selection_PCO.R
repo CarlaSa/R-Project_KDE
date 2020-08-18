@@ -81,3 +81,4 @@ get_criterion_PCO <- function(Kernel, data, m, v = 1) {
     sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, v))
   }
 }
+
