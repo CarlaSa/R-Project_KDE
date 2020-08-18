@@ -1,6 +1,6 @@
 Package: KDE
 Title: Implimenting the Kernel Desity Estimator with different methods for bandwith finding
-Discription: TODO
+Description: TODO
 Version: 0.0
 Authors@R:
     c(person( given = "Charlotte",
@@ -18,3 +18,7 @@ Authors@R:
             )
 Imports:
   stringr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

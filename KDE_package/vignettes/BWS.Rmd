@@ -1,0 +1,61 @@
+---
+title: "Bandwidth Selection Methods"
+author: "Charlotte Boys, Leon Patzig, Carla Sagebiel"
+description: >
+  Learn how to use our package to select a bandwidth for Kernel Density Estimation.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bandwidth Selection Methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4
+)
+```
+
+```{r, include=FALSE}
+devtools::load_all(".")
+library(ggplot2)
+```
+
+```{r setup}
+#library(KDE)
+```
+
+Kernel Density Estimation (KDE) is a statistical tool to estimate the underlying probability density function given a finite set of data points. As parameters, the method takes a choice kernel and a bandwidth \code{h}. Both parameters affect the 'shape' of the final estimate, but the bandwidth has the greatest influence and a selection of methods have been developed to make the best choice of bandwidth given a dataset and a chosen kernel. Our package provides implementations of three such bandwidth selection methods:
+
+* Cross validation
+* Goldenschluger-Lepski
+* Penalized Comparison to Overfitting (PCO)
+
+## Basic usage
+`bandwidth_selection()` has the following arguments:
+
+ * The first argument, `criterion_getter` selects the bandwidth selection method you wish to use.
+ * For the second argument, a `Kernel` should be chosen from the following list:
+    + `kernels$gaussian`
+    + `kernels$rectangular`
+    + `kernels$triangular`
+    + `kernels$epanechnikov` or alternatively `kernel$parabolic`
+    + `kernels$biweight`
+    + `kernels$silverman`
+
+
+```{r, echo=FALSE}
+ggplot(data.frame(x=c(-3, 3)), aes(x=x)) + 
+    geom_path(aes(colour="red"), stat="function", fun=kernels$gaussian)+
+    geom_path(aes(colour="blue"), stat="function", fun=kernels$rectangular) +
+    geom_path(aes(colour="green"), stat="function", fun=kernels$triangular) +
+    geom_path(aes(colour="yellow"), stat="function", fun=kernels$epanechnikov) +
+    geom_path(aes(colour="orange"), stat="function", fun=kernels$biweight) +
+    geom_path(aes(colour="black"), stat="function", fun=kernels$silverman) +
+    scale_colour_identity("Function", guide="legend", 
+                          labels = c("Gaussian", "Rectangular", "Triangular", "Epanechnikov", "Biweight", "Silverman"),
+                          breaks = c("red", "blue", "green", "yellow", "orange", "black")) 
+```
