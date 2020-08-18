@@ -32,8 +32,8 @@ bandwidth_selection <- function(
 #' @export
 bandwidth_selection_criteria <- function(){
   list(
-    # CV = get_criterion_CV,
-    # GL = get_criterion_GL,
+    CV = get_criterion_CV,
+    GL = get_criterion_GL,
     PCO = get_criterion_PCO 
     )}
   
