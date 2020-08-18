@@ -23,7 +23,6 @@ criterion_CV <- function(h, Kernel, data){
   }
   
   term2 <- 2/(n * (n-1) * h)  * sum(temp)
-  
   return(term1- term2)
 }
 
