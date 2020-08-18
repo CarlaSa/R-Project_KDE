@@ -9,6 +9,6 @@
 convolution <- function(f, g, maxEval) {
     sapplify(function(x) {
         #integrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf)$value
-        cubintegrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxeval)$integral
+        cubintegrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxEval)$integral
     })
 }
