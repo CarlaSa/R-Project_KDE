@@ -18,3 +18,4 @@ Authors@R:
             )
 Imports:
   stringr
+RoxygenNote: 7.1.0
