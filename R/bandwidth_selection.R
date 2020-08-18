@@ -14,9 +14,21 @@ bandwidth_selection <- function(
                     criterion_getter,
                     Kernel,
                     data,
-                    lower = 1e-3,
-                    upper = 1e0,
+                    lower = 1e-10,
+                    upper = 1e1,
                     ...
                     ) {
-    optimise(criterion_getter(Kernel, data, ...), lower = lower, upper = upper)$minimum
+    optimise(criterion_getter(Kernel, data, lower, ...), lower = lower, upper = upper)$minimum
 }
+
+source('bandwidth_selection_PCO.R')
+#' Getters for the bandwidth selection criteria.
+#' 
+#' 
+#'
+#' @export
+bandwidth_selection_criteria <- list(
+                                     # CV = get_criterion_CV,
+                                     # GL = get_criterion_GL,
+                                     PCO = get_criterion_PCO
+)
