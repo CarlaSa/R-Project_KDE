@@ -8,11 +8,11 @@
 #' @param data A double vector of the sample data to use.
 #' @return a single value, the criterion Cross Validation is minimizing
 #' 
-criterion_CV <- function(h, Kernel, data){
+criterion_CV <- function(h, Kernel, data, maxEval = 1e6){
   n <- length(data)
   f <- get_kde(h = h, Kernel = Kernel, data = data)
   
-  term1 <- L2norm_squared(f)
+  term1 <- L2norm_squared(f, maxEval)
   
   temp <- 0
   for (i in 1:n){
