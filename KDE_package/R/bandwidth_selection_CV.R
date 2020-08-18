@@ -7,7 +7,6 @@
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @return a single value, the criterion Cross Validation is minimizing
-#' @export
 #' 
 criterion_CV <- function(h, Kernel, data){
   n <- length(data)
@@ -26,4 +25,20 @@ criterion_CV <- function(h, Kernel, data){
   return(term1- term2)
 }
 
+#' Optimisation criterion for bandwidth selection using the Cross Validation method.
+#'
+#' Returns the Cross Validation Criterion for fixed Kernel and data only dependend on h
+#' Minimise it to find the optimal value for h.
+#'
+#' @param Kernel A real function. The kernel.
+#' @param data A double vector of the sample data to use.
+#' @return A vectorised single-parameter function. The Cross Validation bandwidth selection
+#' optimisation criterion.
+get_criterion_CV <- function(Kernel, data){
+  Kernel
+  data
+  function(hvals) {
+    sapply(hvals, criterion_CV, Kernel, data)
+  }
+}
 
