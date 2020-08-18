@@ -18,17 +18,17 @@
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @return A double vector of length 1.
-est_bias <- function(h, Kernel, data, m) {
+est_bias <- function(h, Kernel, data, m, maxEval) {
   # comparison to overfitting
   L2norm_squared(sapplify(function(x) {
     kde(x, h, Kernel, data) -
       kde(x, m, Kernel, data)
-  })) -
+  }), maxEval) -
     # penalized
     L2norm_squared(sapplify(function(x) {
       scaled_kernel(x, h, Kernel) -
         scaled_kernel(x, m, Kernel)
-    })) / length(data)
+    }), maxEval) / length(data)
 }
 
 #' Estimator for the Variance Term.
@@ -40,8 +40,8 @@ est_bias <- function(h, Kernel, data, m) {
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
-est_variance <- function(h, Kernel, n_obs, v) {
-  v * L2norm_squared(Kernel) / (n_obs * h)
+est_variance <- function(h, Kernel, n_obs, v, maxEval) {
+  v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
 }
 
 #' Estimator for the Risk.
@@ -54,10 +54,10 @@ est_variance <- function(h, Kernel, n_obs, v) {
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, m, v) {
+est_risk <- function(h, Kernel, data, m, v, maxEval) {
   n_obs <- length(data)
-  est_bias(h, Kernel, data, m) +
-    est_variance(h, Kernel, n_obs, v)
+  est_bias(h, Kernel, data, m, maxEval) +
+    est_variance(h, Kernel, n_obs, v, maxEval)
 }
 
 #' Optimisation criterion for bandwidth selection using PCO.
@@ -69,16 +69,18 @@ est_risk <- function(h, Kernel, data, m, v) {
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant.
+#' @param maxEval The maximum number of function evaluations to perform when integrating.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
 #' @export
-get_criterion_PCO <- function(Kernel, data, m, v = 1) {
+get_criterion_PCO <- function(Kernel, data, m, v = 1, maxEval=1e6) {
   force(Kernel)
   force(data)
   force(m)
   force(v)
+  force(maxEval)
   function(bandwidths) {
-    sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, v))
+    sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, v, maxEval))
   }
 }
 

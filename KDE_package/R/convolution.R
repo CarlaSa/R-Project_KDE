@@ -6,8 +6,9 @@
 #' @param g A real function
 #' @return A function. The convolution product of f, g.
 #' @export
-convolution <- function(f, g) {
+convolution <- function(f, g, maxEval) {
     sapplify(function(x) {
-        integrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf)$value
+        #integrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf)$value
+        cubintegrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxeval)$integral
     })
 }
