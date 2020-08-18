@@ -37,7 +37,10 @@ Kernel Density Estimation (KDE) is a statistical tool to estimate the underlying
 ## Basic usage
 `bandwidth_selection()` has the following arguments:
 
- * The first argument, `criterion_getter` selects the bandwidth selection method you wish to use.
+ * The first argument, `method` selects the bandwidth selection method you wish to use:
+    + `CV` for Cross Validation
+    + `GL` for Goldenschluger-Lepski
+    + `PCO` for Penalized Comparison to Overfitting
  * For the second argument, a `Kernel` should be chosen from the following list:
     + `kernels$gaussian`
     + `kernels$rectangular`
@@ -59,3 +62,5 @@ ggplot(data.frame(x=c(-3, 3)), aes(x=x)) +
                           labels = c("Gaussian", "Rectangular", "Triangular", "Epanechnikov", "Biweight", "Silverman"),
                           breaks = c("red", "blue", "green", "yellow", "orange", "black")) 
 ```
+
+
