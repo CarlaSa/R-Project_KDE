@@ -17,5 +17,5 @@ Authors@R:
               role = c("aut", "cre"))
             )
 Imports:
-  stringr
-RoxygenNote: 7.1.0
+  stringr, shiny
+RoxygenNote: 7.1.1

@@ -12,7 +12,6 @@
 #' parameter. Must return a double vector of the same length.
 #' (Vectorisation is not required.)
 #' @return A helper object composed of the distribution and the density functions.
-#' @export
 helper <- function(distribution, density) {
     stopifnot('distribution must be a function' = is.function(distribution))
     stopifnot('density must be a function' = is.function(density))
@@ -26,7 +25,6 @@ helper <- function(distribution, density) {
 #'
 #' @param object An object. This object is validated to be a helper object.
 #' @return A logical value.
-#' @export
 is_helper <- function(object) {
     if(!(class(object) == 'helper' &&
             is.function(object) &&
@@ -64,6 +62,7 @@ helpers <- list(
 #' @param n_iter An integer vector of length 1. A calibrating constant. The
 #' algorithm will take an average of n_iter iterations to obtain a sample.
 #' @return A double vector of length n_obs. The observations.
+#' @export
 rejection_sample <- function(n_obs,
                              f,
                              helper = helpers$normal,
