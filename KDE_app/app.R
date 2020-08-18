@@ -1,8 +1,8 @@
 library(shiny)
 
-source('R/rejection_sample.R', chdir=T)
-source('R/KDE.R', chdir=T)
-source('R/bandwidth_selection.R', chdir=T)
+#source('R/rejection_sample.R', chdir=T)
+#source('R/KDE.R', chdir=T)
+#source('R/bandwidth_selection.R', chdir=T)
 
 ui <- fluidPage(
     titlePanel('Kernel Estimator of Density'),
@@ -42,13 +42,13 @@ ui <- fluidPage(
               ),
         column(3,
                 h4('kernel'),
-                selectInput('kernel', 'kernel', kernels)
+                selectInput('kernel', 'kernel', names(kernels))
               ),
         column(3,
                 h4('bandwidth selection'),
                 sliderInput('h', 'fixed bandwidth', min = 1e-10, max = 1e0, value = 0.5),
                 checkboxInput('extra_fixed', 'Display an extra KDE using a manually controlled fixed bandwidth'),
-                selectInput('bandwidth_selection_method', 'bandwidth selection method', bandwidth_selection_criteria),
+                selectInput('bandwidth_selection_method', 'bandwidth selection method', bandwidth_selection_criteria()),
               )
     )
 )
@@ -107,7 +107,9 @@ server <- function(input, output) {
     }
     
     .get_fixed_kde <- reactive({
-        get_kde(as.double(input$h), input$kernel, .get_data())
+        get_kde(as.double(input$h), 
+                kernels[[input$kernel]], 
+                .get_data())
     })
     
     # data upload mechanism
@@ -150,7 +152,6 @@ server <- function(input, output) {
         f1 <- .get_f()
         curve(f1, add = TRUE, col = 'green')
         kde_fixed <- .get_fixed_kde()
-        browser()
         if(.is_fixed_mode()) curve(kde_fixed, add = TRUE, col = 'red')
         legend('topleft',
                c('number of data samples (scaled)',
