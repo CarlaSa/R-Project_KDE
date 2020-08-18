@@ -3,9 +3,9 @@
 #' @param func A function. The kernel function. Must be vectorised.
 #' @return A Kernel object.
 #' @export
-Kernel <- function(func) {
+Kernel <- function(func, maxEval = 1e6) {
     K <- func
-    attr(K, 'L2norm_squared') <- L2norm_squared(K)
+    attr(K, 'L2norm_squared') <- L2norm_squared(K, maxEval)
     attr(K, 'L2norm') <- sqrt(attr(K, 'L2norm_squared'))
     # probably TODO: number of subdivisions required
     class(K) <- 'Kernel'
@@ -22,7 +22,7 @@ Kernel <- function(func) {
 #' This is only needed when check_values is set to TRUE.
 #' @return A logical.
 #' @export
-is_Kernel <- function(object, check_values = FALSE, tolerance_rel = 1e-12) {
+is_Kernel <- function(object, check_values = FALSE, tolerance_rel = 1e-12, maxEval = 1e6) {
     class(object) == 'Kernel' &&
         is.function(object) &&
         is.double(attr(object, 'L2norm')) &&

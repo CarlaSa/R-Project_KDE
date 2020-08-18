@@ -2,7 +2,7 @@
 #'
 #' Find the optimal value for the bandwidth h.
 #'
-#' @param criterion_name Keyword of the bandwidth selection algorithm to use. Implimented are: 
+#' @param criterion_method Keyword of the bandwidth selection algorithm to use. Implimented are: 
 #' "CV" the Cross Validation method
 #' "GL" the Goldenshluger-Lepski method
 #' "PCO" the PCO method
@@ -14,15 +14,19 @@
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bandwidth_selection <- function(
-  criterion_name,
-  Kernel,
-  data,
-  lower = 1e-3,
-  upper = 1e0,
-  ...
+    criterion_method,
+    Kernel,
+    data,
+    lower = 1e-3,
+    upper = 1e0,
+    ...
 ) {
-  criterion <- bandwidth_selection_criteria()[[criterion_name]](Kernel, data, ...)
-  optimise(criterion, lower = lower, upper = upper)$minimum
+    criterion_getter <- bandwidth_selection_criteria()[[criterion_method]]
+    if ('m' %in% formalArgs(criterion_getter)) 
+        criterion <- criterion_getter(Kernel, data, m = lower, ...)
+    else
+        criterion <- criterion_getter(Kernel, data, ...)
+    optimise(criterion, lower = lower, upper = upper)$minimum
 }
 
 #' Getters for the bandwidth selection criteria.
@@ -35,5 +39,6 @@ bandwidth_selection_criteria <- function(){
     CV = get_criterion_CV,
     GL = get_criterion_GL,
     PCO = get_criterion_PCO 
-    )}
+    )
+}
   
