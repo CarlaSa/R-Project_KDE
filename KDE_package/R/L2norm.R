@@ -7,10 +7,11 @@
 #' @examples
 #' L2norm_squared(kernels$triangular)
 #' @export
-L2norm_squared <- function(f) {
+L2norm_squared <- function(f, maxEval) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))
-    integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)$value
+    #integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)$value
+    cubintegrate(function(u) f(u)^2, lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxEval)$integral
 }
 
 #' Calculate L2-norm of a real function.
