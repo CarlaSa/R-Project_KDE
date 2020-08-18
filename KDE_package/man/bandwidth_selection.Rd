@@ -5,7 +5,7 @@
 \title{Bandwidth selection using optimise.}
 \usage{
 bandwidth_selection(
-  criterion_getter,
+  criterion_name,
   Kernel,
   data,
   lower = 1e-10,
@@ -14,7 +14,10 @@ bandwidth_selection(
 )
 }
 \arguments{
-\item{criterion_getter}{A function. The bandwidth selection method. Must return a function accepting exactly one numeric parameter h (the bandwidth) and returning a number. This is the optimisation criterion, smaller values are considered better.}
+\item{criterion_name}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
+"CV" the Cross Validation method
+"GL" the Goldenshluger-Lepski method
+"PCO" the PCO method}
 
 \item{Kernel}{A real function. The kernel.}
 
