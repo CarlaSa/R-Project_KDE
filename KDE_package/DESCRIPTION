@@ -18,7 +18,9 @@ Authors@R:
               role = c("aut", "cre"))
             )
 Imports:
-  stringr
+  stringr,
+  shiny,
+  cubature
 Suggests: 
     knitr,
     rmarkdown
