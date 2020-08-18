@@ -4,7 +4,7 @@
 \alias{is_Kernel}
 \title{Validation function for Kernel objects.}
 \usage{
-is_Kernel(object, check_values = FALSE, tolerance_rel = 1e-12)
+is_Kernel(object, check_values = FALSE, tolerance_rel = 1e-12, maxEval = 1e+06)
 }
 \arguments{
 \item{object}{Any object. This object is validated to be a Kernel.}
@@ -15,6 +15,8 @@ the integral equals 1.}
 
 \item{tolerance_rel}{A double vector of length 1. The relative tolerance for any equality checks.
 This is only needed when check_values is set to TRUE.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A logical.

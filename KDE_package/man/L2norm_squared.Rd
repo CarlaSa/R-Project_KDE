@@ -4,10 +4,12 @@
 \alias{L2norm_squared}
 \title{Calculate L2-norm squared of a real function.}
 \usage{
-L2norm_squared(f)
+L2norm_squared(f, maxEval)
 }
 \arguments{
 \item{f}{A real function}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A double vector of length 1. The L2-norm squared of f.

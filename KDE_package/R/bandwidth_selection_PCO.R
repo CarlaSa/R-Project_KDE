@@ -17,6 +17,7 @@
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
 est_bias <- function(h, Kernel, data, m, maxEval) {
   # comparison to overfitting
@@ -39,6 +40,7 @@ est_bias <- function(h, Kernel, data, m, maxEval) {
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param v A double vector of length 1. A calibration constant.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector.
 est_variance <- function(h, Kernel, n_obs, v, maxEval) {
   v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
@@ -53,6 +55,7 @@ est_variance <- function(h, Kernel, n_obs, v, maxEval) {
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
 est_risk <- function(h, Kernel, data, m, v, maxEval) {
   n_obs <- length(data)
@@ -69,7 +72,7 @@ est_risk <- function(h, Kernel, data, m, v, maxEval) {
 #' @param data A double vector of the sample data to use.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant.
-#' @param maxEval The maximum number of function evaluations to perform when integrating.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
 #' @export

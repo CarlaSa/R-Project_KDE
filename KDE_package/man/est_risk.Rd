@@ -5,9 +5,9 @@
 \alias{est_risk}
 \title{Estimator for the Risk.}
 \usage{
-est_risk(h, Kernel, data, m, v)
+est_risk(h, Kernel, data, m, v, maxEval)
 
-est_risk(h, Kernel, data, m, v)
+est_risk(h, Kernel, data, m, v, maxEval)
 }
 \arguments{
 \item{h}{A double vector of length 1. The bandwidth.}
@@ -19,6 +19,8 @@ est_risk(h, Kernel, data, m, v)
 \item{m}{A double vector of length 1. The smallest bandwidth.}
 
 \item{v}{A double vector of length 1. A calibration constant for weighing the variance term.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 
 \item{bandwidths}{A double vector. The set of h_prime bandwidths to test.}
 }

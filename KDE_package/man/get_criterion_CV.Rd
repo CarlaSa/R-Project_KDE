@@ -4,12 +4,14 @@
 \alias{get_criterion_CV}
 \title{Optimisation criterion for bandwidth selection using the Cross Validation method.}
 \usage{
-get_criterion_CV(Kernel, data)
+get_criterion_CV(Kernel, data, maxEval = 1e+06)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}
 
 \item{data}{A double vector of the sample data to use.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A vectorised single-parameter function. The Cross Validation bandwidth selection

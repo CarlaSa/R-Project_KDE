@@ -4,6 +4,7 @@
 #'
 #' @param f A real function
 #' @param g A real function
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A function. The convolution product of f, g.
 #' @export
 convolution <- function(f, g, maxEval) {

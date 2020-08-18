@@ -5,9 +5,9 @@
 \alias{est_variance}
 \title{Estimator for the Variance Term.}
 \usage{
-est_variance(h, Kernel, n_obs, v)
+est_variance(h, Kernel, n_obs, v, maxEval)
 
-est_variance(h, Kernel, n_obs, v)
+est_variance(h, Kernel, n_obs, v, maxEval)
 }
 \arguments{
 \item{h}{A double vector of bandwidths.}
@@ -17,6 +17,8 @@ est_variance(h, Kernel, n_obs, v)
 \item{n_obs}{A double vector of length 1. The number of observations.}
 
 \item{v}{A double vector of length 1. A calibration constant.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A double vector.

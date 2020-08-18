@@ -5,9 +5,9 @@
 \alias{est_bias}
 \title{Estimator for the Bias Term.}
 \usage{
-est_bias(h, Kernel, data, m)
+est_bias(h, Kernel, data, m, maxEval)
 
-est_bias(h, Kernel, data, m)
+est_bias(h, Kernel, data, m, maxEval)
 }
 \arguments{
 \item{h}{A double vector of length 1. The bandwidth.}
@@ -17,6 +17,8 @@ est_bias(h, Kernel, data, m)
 \item{data}{A double vector of the sample data to use.}
 
 \item{m}{A double vector of length 1. The smallest bandwidth.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 
 \item{bandwidths}{A double vector. The set of h_prime bandwidths to test.}
 

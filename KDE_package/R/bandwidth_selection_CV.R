@@ -6,9 +6,10 @@
 #' @param h A double vector of length 1. The bandwidth.
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return a single value, the criterion Cross Validation is minimizing
 #' 
-criterion_CV <- function(h, Kernel, data, maxEval = 1e6){
+criterion_CV <- function(h, Kernel, data, maxEval){
   n <- length(data)
   f <- get_kde(h = h, Kernel = Kernel, data = data)
   
@@ -32,13 +33,14 @@ criterion_CV <- function(h, Kernel, data, maxEval = 1e6){
 #'
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The Cross Validation bandwidth selection
 #' optimisation criterion.
-get_criterion_CV <- function(Kernel, data){
+get_criterion_CV <- function(Kernel, data, maxEval=1e6){
   Kernel
   data
   function(hvals) {
-    sapply(hvals, criterion_CV, Kernel, data)
+    sapply(hvals, criterion_CV, Kernel, data, maxEval)
   }
 }
 

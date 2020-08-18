@@ -4,7 +4,7 @@
 \alias{get_double_kernel_estimator}
 \title{Double kernel estimator.}
 \usage{
-get_double_kernel_estimator(h, h_prime, Kernel, data)
+get_double_kernel_estimator(h, h_prime, Kernel, data, maxEval)
 }
 \arguments{
 \item{h}{A double vector of length 1. A bandwidth.}
@@ -12,6 +12,8 @@ get_double_kernel_estimator(h, h_prime, Kernel, data)
 \item{h_prime}{A double vector of length 1. Another bandwidth.}
 
 \item{data}{A double vector of the sample data to use.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A function. The double kernel estimator.

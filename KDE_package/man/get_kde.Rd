@@ -9,7 +9,7 @@ get_kde(h, Kernel, data)
 \arguments{
 \item{h}{A double vector of length 1. The bandwidth.}
 
-\item{Kernel}{A real function. The kernel.}
+\item{Kernel}{A Kernel object, a real function or the name of a Kernel from the `kernels` list. The kernel.}
 
 \item{data}{A double vector of the sample data to use.}
 }

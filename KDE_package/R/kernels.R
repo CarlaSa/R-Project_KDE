@@ -1,6 +1,7 @@
 #' Constructor for a Kernel object.
 #'
 #' @param func A function. The kernel function. Must be vectorised.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A Kernel object.
 #' @export
 Kernel <- function(func, maxEval = 1e6) {
@@ -20,6 +21,7 @@ Kernel <- function(func, maxEval = 1e6) {
 #' the integral equals 1.
 #' @param tolerance_rel A double vector of length 1. The relative tolerance for any equality checks.
 #' This is only needed when check_values is set to TRUE.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A logical.
 #' @export
 is_Kernel <- function(object, check_values = FALSE, tolerance_rel = 1e-12, maxEval = 1e6) {

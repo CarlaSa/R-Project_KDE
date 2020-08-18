@@ -16,6 +16,7 @@
 #' @param h A double vector of length 1. A bandwidth.
 #' @param h_prime A double vector of length 1. Another bandwidth.
 #' @param data A double vector of the sample data to use.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A function. The double kernel estimator.
 get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
   kde_h <- get_kde(h, Kernel, data)
@@ -35,6 +36,7 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
 #' @param bandwidths A double vector. The set of h_prime bandwidths to test.
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
 est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
   n_obs <- length(data)
@@ -58,6 +60,7 @@ est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param v A double vector of length 1. A calibration constant.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector.
 est_variance <- function(h, Kernel, n_obs, v, maxEval) {
   v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
@@ -73,8 +76,9 @@ est_variance <- function(h, Kernel, n_obs, v, maxEval) {
 #' @param bandwidths A double vector. The set of h_prime bandwidths to test.
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, bandwidths, c, v) {
+est_risk <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
   n_obs <- length(data)
   est_bias(h, Kernel, data, bandwidths, c, v, maxEval) +
     est_variance(h, Kernel, n_obs, v, maxEval)
@@ -90,6 +94,7 @@ est_risk <- function(h, Kernel, data, bandwidths, c, v) {
 #' @param bandwidths A double vector containing the bandwidths to try.
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
 get_criterion_GL <- function(Kernel, data, bandwidths, c = 1, v = 1, maxEval=1e6) {

@@ -1,5 +1,5 @@
 Package: KDE
-Title: Implimenting the Kernel Desity Estimator with different methods for bandwith finding
+Title: Implementing the Kernel Desity Estimator with different methods for bandwith finding
 Description: TODO
 Version: 0.0
 Encoding: UTF-8
@@ -20,10 +20,16 @@ Authors@R:
 Imports:
   stringr,
   shiny,
-  cubature
+  cubature,
+  methods,
+  stats,
+  rlang
 Suggests: 
     knitr,
     rmarkdown
-VignetteBuilder: knitr
-  stringr, shiny
+VignetteBuilder: 
+    knitr,
+    stringr, 
+    shiny
 RoxygenNote: 7.1.1
+License: MIT + file LICENSE

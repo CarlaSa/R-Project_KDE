@@ -4,12 +4,14 @@
 \alias{convolution}
 \title{Calculate the convolution product of two real functions.}
 \usage{
-convolution(f, g)
+convolution(f, g, maxEval)
 }
 \arguments{
 \item{f}{A real function}
 
 \item{g}{A real function}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A function. The convolution product of f, g.

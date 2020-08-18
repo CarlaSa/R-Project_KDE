@@ -5,16 +5,16 @@
 \title{Bandwidth selection using optimise.}
 \usage{
 bandwidth_selection(
-  criterion_name,
+  criterion_method,
   Kernel,
   data,
-  lower = 1e-10,
-  upper = 10,
+  lower = 0.001,
+  upper = 1,
   ...
 )
 }
 \arguments{
-\item{criterion_name}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
+\item{criterion_method}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
 "CV" the Cross Validation method
 "GL" the Goldenshluger-Lepski method
 "PCO" the PCO method}

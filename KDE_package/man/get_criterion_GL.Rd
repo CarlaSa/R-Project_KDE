@@ -4,7 +4,7 @@
 \alias{get_criterion_GL}
 \title{Optimisation criterion for bandwidth selection using the Goldenshluger-Lepski method.}
 \usage{
-get_criterion_GL(Kernel, data, bandwidths, c = 1, v = 1)
+get_criterion_GL(Kernel, data, bandwidths, c = 1, v = 1, maxEval = 1e+06)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}
@@ -16,6 +16,8 @@ get_criterion_GL(Kernel, data, bandwidths, c = 1, v = 1)
 \item{c}{A double vector of length 1. A calibration constant.}
 
 \item{v}{A double vector of length 1. A calibration constant.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection

@@ -1,0 +1,43 @@
+2---
+title: "Comparison of Bandwidth Selection Methods"
+author: "Charlotte Boys, Leon Patzig, Carla Sagebiel"
+description: >
+  Comparison of the three bandwidth selection methods.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparison of Bandwidth Selection Methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4
+)
+```
+
+```{r, include=FALSE}
+#devtools::load_all(".")
+#devtools::install("KDE_package")
+library(ggplot2)
+```
+
+```{r setup}
+library(KDE)
+```
+
+We run a simulation study to compare the three bandwidth selection methods.
+
+First, let us generate our set of finite data points from a mixed Gaussian distribution:
+```{r}
+realFunction <- pdfs$Mix2Gauss
+data <- rejection_sample(n_obs=1000, realFunction)
+```
+
+```{r, echo=FALSE}
+plot(data)
+```
+

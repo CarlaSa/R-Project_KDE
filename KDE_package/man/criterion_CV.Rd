@@ -5,7 +5,7 @@
 \title{Criterion Cross Validation
 We want to choose h in such a way, that criterion is minimized}
 \usage{
-criterion_CV(h, Kernel, data)
+criterion_CV(h, Kernel, data, maxEval)
 }
 \arguments{
 \item{h}{A double vector of length 1. The bandwidth.}
@@ -13,6 +13,8 @@ criterion_CV(h, Kernel, data)
 \item{Kernel}{A real function. The kernel.}
 
 \item{data}{A double vector of the sample data to use.}
+
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 a single value, the criterion Cross Validation is minimizing

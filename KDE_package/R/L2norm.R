@@ -3,6 +3,7 @@
 #' Calculate the L2-norm squared of a real function using integrate.
 #'
 #' @param f A real function
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1. The L2-norm squared of f.
 #' @examples
 #' L2norm_squared(kernels$triangular)
