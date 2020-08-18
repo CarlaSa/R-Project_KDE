@@ -2,7 +2,10 @@
 #'
 #' Find the optimal value for the bandwidth h.
 #'
-#' @param criterion_getter A function. The bandwidth selection method. Must return a function accepting exactly one numeric parameter h (the bandwidth) and returning a number. This is the optimisation criterion, smaller values are considered better.
+#' @param criterion_name Keyword of the bandwidth selection algorithm to use. Implimented are: 
+#' "CV" the Cross Validation method
+#' "GL" the Goldenshluger-Lepski method
+#' "PCO" the PCO method
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param lower A double vector of length 1. The lowest bandwidth to test.
@@ -11,14 +14,15 @@
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bandwidth_selection <- function(
-  criterion_getter,
+  criterion_name,
   Kernel,
   data,
   lower = 1e-10,
   upper = 1e1,
   ...
 ) {
-  optimise(criterion_getter(Kernel, data, lower, ...), lower = lower, upper = upper)$minimum
+  criterion <- bandwidth_selection_criteria()[[criterion_name]](Kernel, data, lower, ...)
+  optimise(criterion, lower = lower, upper = upper)$minimum
 }
 
 #' Getters for the bandwidth selection criteria.
