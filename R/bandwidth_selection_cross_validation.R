@@ -27,7 +27,7 @@ e_kernel <- function(x){
   0.75 * (x <1 & x > -1) * (1 - x^2)
 }
 
-criterion <-function(h, Kernel, Z ,n, l, u){
+criterion <-function(h, Kernel, Z , n, l, u){
   #' We want to choose h in such a way, that criterion is minimized
   #' 
   #' h is the bandwidth
@@ -115,6 +115,7 @@ bws_cross_validation <- function(J, len, ...){
   values = 1/ (1:len)
   hmin = 0
   Jmin = Inf
+  
   for (h in values){
     time <- Sys.time()
     J_temp = J(h, ...)
@@ -142,3 +143,4 @@ h <- bws_cross_validation(J = criterion, len = 40, Kernel = e_kernel, n = nobs, 
 kde <- get_kde(Kernel = e_kernel, n = nobs, h = h, data = Z1)
 plot(true_function1, type = "l")
 lines(Vectorize(kde)(ab1), col = "red")
+lines(density(Z1))

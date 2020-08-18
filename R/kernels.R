@@ -31,14 +31,14 @@ is_Kernel <- function(object, check_values = FALSE, tolerance_rel = 1e-12) {
         is.double(attr(object, 'L2norm_squared')) &&
         length(attr(object, 'L2norm')) == 1 &&
         length(attr(object, 'L2norm_squared')) == 1 &&
-        !check_values || (
+        (!check_values || (
             abs(attr(object, 'L2norm_squared') / attr(object, 'L2norm')^2 - 1) < tolerance_rel &&
                 abs(L2norm_squared(object) / attr(object, 'L2norm_squared') - 1) < tolerance_rel &&
                 {
                     integral <- integrate(object, lower = -Inf, upper = Inf)
                     abs(integral$value - 1) < integral$abs.error
                 }
-        )
+        ))
 }
 
 #' Some Kernels.
