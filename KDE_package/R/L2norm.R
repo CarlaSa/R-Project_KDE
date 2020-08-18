@@ -1,5 +1,3 @@
-source('kernels.R')
-
 #' Calculate L2-norm squared of a real function.
 #'
 #' Calculate the L2-norm squared of a real function using integrate.
@@ -26,6 +24,6 @@ L2norm_squared <- function(f) {
 #' @export
 L2norm <- function(f) {
     if(is_Kernel(f))
-        return(attr(f, 'L2norm'))
+        return(attr(f, 'L2norm_squared'))
     sqrt(L2norm_squared(f))
 }
