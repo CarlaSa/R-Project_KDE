@@ -102,8 +102,13 @@ server <- function(input, output) {
         }
     }
     
+    .get_kde <- reactive({
+        get_kde(.get_bandwidth(), 
+                kernels[[input$kernel]], 
+                .get_data())
+    })
     .get_fixed_kde <- reactive({
-        get_kde(as.double(input$h), 
+        get_kde(.get_fixed_bandwidth(), 
                 kernels[[input$kernel]], 
                 .get_data())
     })
@@ -147,8 +152,12 @@ server <- function(input, output) {
         hist(.get_data(), breaks = 1000, freq = FALSE, xlim = input$plot_range, border = 'light grey')
         f1 <- .get_f()
         curve(f1, add = TRUE, col = 'green')
-        kde_fixed <- .get_fixed_kde()
-        if(.is_fixed_mode()) curve(kde_fixed, add = TRUE, col = 'red')
+        kde <- .get_kde()
+        curve(kde, add = TRUE, col = 'blue')
+        if(.is_fixed_mode()) {
+            kde_fixed <- .get_fixed_kde()
+            curve(kde_fixed, add = TRUE, col = 'red')
+        }
         legend('topleft',
                c('number of data samples (scaled)',
                  'true function',
