@@ -2,6 +2,7 @@ Package: KDE
 Title: Implimenting the Kernel Desity Estimator with different methods for bandwith finding
 Description: TODO
 Version: 0.0
+Encoding: UTF-8
 Authors@R:
     c(person( given = "Charlotte",
               family = "Boys", 

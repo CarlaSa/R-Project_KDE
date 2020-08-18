@@ -17,8 +17,8 @@ bandwidth_selection <- function(
   criterion_name,
   Kernel,
   data,
-  lower = 1e-10,
-  upper = 1e1,
+  lower = 1e-3,
+  upper = 1e0,
   ...
 ) {
   criterion <- bandwidth_selection_criteria()[[criterion_name]](Kernel, data, lower, ...)
@@ -32,8 +32,8 @@ bandwidth_selection <- function(
 #' @export
 bandwidth_selection_criteria <- function(){
   list(
-    # CV = get_criterion_CV,
-    # GL = get_criterion_GL,
+    CV = get_criterion_CV,
+    GL = get_criterion_GL,
     PCO = get_criterion_PCO 
     )}
   
