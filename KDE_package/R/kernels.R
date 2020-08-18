@@ -1,5 +1,3 @@
-source('L2norm.R')
-
 #' Constructor for a Kernel object.
 #'
 #' @param func A function. The kernel function. Must be vectorised.
