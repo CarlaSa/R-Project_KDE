@@ -17,8 +17,13 @@ Authors@R:
               role = c("aut", "cre"))
             )
 Imports:
+<<<<<<< HEAD
   stringr
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+=======
+  stringr, shiny
+RoxygenNote: 7.1.1
+>>>>>>> e96bec25e8502ca9d80ad22ef322fba75463d1da
