@@ -1,5 +1,3 @@
-source('tools.R')
-
 #' Calculate the convolution product of two real functions.
 #'
 #' Calculate the convolution product of two real functions using integrate.
