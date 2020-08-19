@@ -5,6 +5,7 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             sliderInput('plot_range', 'plot range', min = -10, max = 10, value = c(-3, 3), step = 0.25)
+            #sliderInput('plot_factor', 'scale factor for the histogram', min = 0, max = 2, value = 1, step = 0.05)
         ),
         mainPanel(
             plotOutput('plot')
@@ -13,6 +14,7 @@ ui <- fluidPage(
     fluidRow(
         column(3,
                h4('true density function'),
+                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories)),
                 'Your function expression:',
                 textInput('f', 'f <- function(x)', value = 'abs(x)/4 * (abs(x) <= 2)')
                ),
@@ -34,7 +36,7 @@ ui <- fluidPage(
                                         ),
                                      downloadButton('rds_download', 'Download data')
                                     )),
-                actionButton('resample', 'resample (not working yet)')
+                #actionButton('resample', 'resample (not working yet)')
               ),
         column(3,
                 h4('kernel'),
@@ -42,9 +44,26 @@ ui <- fluidPage(
               ),
         column(3,
                 h4('bandwidth selection'),
-                sliderInput('h', 'fixed bandwidth', min = 1e-10, max = 1e0, value = 0.5),
+                sliderInput('h', 'fixed bandwidth', min = 0.01, max = 1, value = 0.5),
                 checkboxInput('extra_fixed', 'Display an extra KDE using a manually controlled fixed bandwidth'),
-                selectInput('bandwidth_selection_method', 'bandwidth selection method', bandwidth_selection_criteria()),
+                fluidRow(
+                    column(9,
+                        selectInput('bandwidth_selection_method', 'bandwidth selection method', KDE:::bandwidth_selection_criteria())
+                    ),
+                    column(3,
+                        actionButton('run_bws', 'Run')
+                    ),
+                    column(4,
+                        'Result:'
+                    ),
+                    column(5,
+                        textOutput('h_bws')
+                    ),
+                    column(3,
+                        actionButton('use_h_bws', 'Use')
+                    )
+                )
+
               )
     )
 )
@@ -102,17 +121,6 @@ server <- function(input, output) {
         }
     }
     
-    .get_kde <- reactive({
-        get_kde(.get_bandwidth(), 
-                kernels[[input$kernel]], 
-                .get_data())
-    })
-    .get_fixed_kde <- reactive({
-        get_kde(.get_fixed_bandwidth(), 
-                kernels[[input$kernel]], 
-                .get_data())
-    })
-    
     # data upload mechanism
     #output
     
@@ -142,27 +150,26 @@ server <- function(input, output) {
         if(!is.null(computed_bandwidth))
             computed_bandwidth
         else
-            .get_fixed_bandwidth()
+            input$h
     })
-    .get_fixed_bandwidth <- reactive({
-        input$h
-    })
-    
-    output$plot <- renderPlot({
+
+   output$plot <- renderPlot({
         hist(.get_data(), breaks = 1000, freq = FALSE, xlim = input$plot_range, border = 'light grey')
         f1 <- .get_f()
         curve(f1, add = TRUE, col = 'green')
-        kde <- .get_kde()
+        kde <- get_kde(.get_bandwidth(), 
+                kernels[[input$kernel]], 
+                .get_data())
         curve(kde, add = TRUE, col = 'blue')
         if(.is_fixed_mode()) {
-            kde_fixed <- .get_fixed_kde()
+            kde_fixed <- get_kde(input$h, kernels[[input$kernel]], .get_data())
             curve(kde_fixed, add = TRUE, col = 'red')
         }
         legend('topleft',
                c('number of data samples (scaled)',
                  'true function',
                  paste('kernel density estimator with bandwidth', .get_bandwidth()),
-                 if(.is_fixed_mode()) paste('kernel density estimator with (fixed) bandwidth', .get_fixed_bandwidth())
+                 if(.is_fixed_mode()) paste('kernel density estimator with (fixed) bandwidth', input$h)
                 ),
               col = c('light grey', 'green', 'blue', 'red'),
               lwd = c(3, 1, 1, 1))
