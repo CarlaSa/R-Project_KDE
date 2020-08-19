@@ -21,7 +21,7 @@
 get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
   kde_h <- get_kde(h, Kernel, data)
   Kernel_h_prime <- function(x) {
-    sapply(x, scaled_kernel, h, Kernel)
+    sapply(x, scaled_kernel, h_prime, Kernel)
   }
   convolution(Kernel_h_prime, kde_h, maxEval)
 }
@@ -43,11 +43,11 @@ est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
   max(
     sapply(bandwidths, function(h_prime) {
       kde_h_prime <- get_kde(h_prime, Kernel, data)
-      double_kernel_estimator <- get_double_kernel_estimator(h, h_prime, Kernel, data)
+      double_kernel_estimator <- get_double_kernel_estimator(h, h_prime, Kernel, data, maxEval)
       L2norm_squared(function(x) {
         kde_h_prime(x) - double_kernel_estimator(x)
       }, maxEval) -
-        c * est_variance(h_prime, Kernel, n_obs, v)
+        c * est_variance(h_prime, Kernel, n_obs, v, maxEval)
     }
     ))
 }
@@ -55,7 +55,7 @@ est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
 #' Estimator for the Variance Term.
 #'
 #' V_hat
-#'source('R/bandwidth_selection.R', chdir=T)
+#'
 #' @param h A double vector of bandwidths.
 #' @param Kernel A real function. The kernel.
 #' @param n_obs A double vector of length 1. The number of observations.
