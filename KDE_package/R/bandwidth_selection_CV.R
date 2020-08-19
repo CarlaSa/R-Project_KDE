@@ -12,7 +12,6 @@
 criterion_CV <- function(h, Kernel, data, maxEval){
   n <- length(data)
   f <- get_kde(h = h, Kernel = Kernel, data = data)
-  data = 
   term1 <- L2norm_squared(f, maxEval)
   
   temp <- 0
