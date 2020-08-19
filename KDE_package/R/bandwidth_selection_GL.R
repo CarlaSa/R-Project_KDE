@@ -97,13 +97,18 @@ est_risk <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-get_criterion_GL <- function(Kernel, data, bandwidths, c = 1, v = 1, maxEval=1e6) {
-  force(Kernel)
-  force(data)
-  force(bandwidths)
-  force(c)
-  force(v)
-  function(h_vals) {
-    sapply(h_vals, function(h) est_risk(h, Kernel, data, bandwidths, c, v, maxEval))
-  }
+get_criterion_GL <- function(Kernel, data, bandwidths, c = 1, v = 1, maxEval = 1e6, lower = NULL, upper = NULL, n_bandwidths = 1e2) {
+    if(missing(bandwidths)) {
+        stopifnot('Either bandwidths or both lower and upper must be set.' = is.double(lower) && is.double(upper))
+        bandwidths <- seq(lower, upper, length.out = n_bandwidths)
+    }
+    force(Kernel)
+    force(data)
+    force(bandwidths)
+    force(c)
+    force(v)
+    force(maxEval)
+    function(h_vals) {
+        sapply(h_vals, function(h) est_risk(h, Kernel, data, bandwidths, c, v, maxEval))
+    }
 }
