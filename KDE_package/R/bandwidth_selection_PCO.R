@@ -19,7 +19,7 @@
 #' @param m A double vector of length 1. The smallest bandwidth.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
-est_bias <- function(h, Kernel, data, m, maxEval) {
+est_bias_PCO <- function(h, Kernel, data, m, maxEval) {
   # comparison to overfitting
   L2norm_squared(sapplify(function(x) {
     kde(x, h, Kernel, data) -
@@ -42,7 +42,7 @@ est_bias <- function(h, Kernel, data, m, maxEval) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector.
-est_variance <- function(h, Kernel, n_obs, v, maxEval) {
+est_variance_PCO <- function(h, Kernel, n_obs, v, maxEval) {
   v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
 }
 
@@ -57,10 +57,10 @@ est_variance <- function(h, Kernel, n_obs, v, maxEval) {
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, m, v, maxEval) {
+est_risk_PCO <- function(h, Kernel, data, m, v, maxEval) {
   n_obs <- length(data)
-  est_bias(h, Kernel, data, m, maxEval) +
-    est_variance(h, Kernel, n_obs, v, maxEval)
+  est_bias_PCO(h, Kernel, data, m, maxEval) +
+    est_variance_PCO(h, Kernel, n_obs, v, maxEval)
 }
 
 #' Optimisation criterion for bandwidth selection using PCO.
@@ -83,7 +83,7 @@ get_criterion_PCO <- function(Kernel, data, lower, v = 1, maxEval = 1e6) {
   force(v)
   force(maxEval)
   function(bandwidths) {
-    sapply(bandwidths, function(h) est_risk(h, Kernel, data, lower, v, maxEval))
+    sapply(bandwidths, function(h) est_risk_PCO(h, Kernel, data, lower, v, maxEval))
   }
 }
 

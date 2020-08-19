@@ -38,7 +38,7 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
-est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
+est_bias_GL <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
   n_obs <- length(data)
   max(
     sapply(bandwidths, function(h_prime) {
@@ -47,7 +47,7 @@ est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
       L2norm_squared(function(x) {
         kde_h_prime(x) - double_kernel_estimator(x)
       }, maxEval) -
-        c * est_variance(h_prime, Kernel, n_obs, v, maxEval)
+        c * est_variance_GL(h_prime, Kernel, n_obs, v, maxEval)
     }
     ))
 }
@@ -62,7 +62,7 @@ est_bias <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector.
-est_variance <- function(h, Kernel, n_obs, v, maxEval) {
+est_variance_GL <- function(h, Kernel, n_obs, v, maxEval) {
   v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
 }
 
@@ -78,10 +78,10 @@ est_variance <- function(h, Kernel, n_obs, v, maxEval) {
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1.
-est_risk <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
+est_risk_GL <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
   n_obs <- length(data)
-  est_bias(h, Kernel, data, bandwidths, c, v, maxEval) +
-    est_variance(h, Kernel, n_obs, v, maxEval)
+  est_bias_GL(h, Kernel, data, bandwidths, c, v, maxEval) +
+    est_variance_GL(h, Kernel, n_obs, v, maxEval)
 }
 
 #' Optimisation criterion for bandwidth selection using the Goldenshluger-Lepski method.
@@ -112,6 +112,6 @@ get_criterion_GL <- function(Kernel, data, bandwidths = NULL, c = 1, v = 1, maxE
     force(v)
     force(maxEval)
     function(h_vals) {
-        sapply(h_vals, function(h) est_risk(h, Kernel, data, bandwidths, c, v, maxEval))
+        sapply(h_vals, function(h) est_risk_GL(h, Kernel, data, bandwidths, c, v, maxEval))
     }
 }
