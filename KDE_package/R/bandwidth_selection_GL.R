@@ -102,7 +102,7 @@ est_risk_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
 #' @param upper A double vector of length 1. The highest bandwidth to test.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 1e2, c = 1, v = 1, lower = NULL, upper = NULL) {
+get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 1e2, c = 1, v = 2, lower = NULL, upper = NULL) {
     if(is.null(bandwidths)) {
         stopifnot('Either bandwidths or both lower and upper must be set.' = is.double(lower) && is.double(upper))
         bandwidths <- seq(lower, upper, length.out = n_bandwidths)
