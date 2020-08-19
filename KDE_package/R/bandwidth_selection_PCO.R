@@ -43,8 +43,8 @@ est_bias_PCO <- function(h, Kernel, data, maxEval, m) {
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
-est_variance_PCO <- function(h, Kernel, maxEval, n_obs, v) {
-  v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
+est_variance_PCO <- function(h, Kernel, maxEval, n_obs) {
+  L2norm_squared(Kernel, maxEval) / (n_obs * h)
 }
 
 #' Estimator for the Risk.
@@ -61,7 +61,7 @@ est_variance_PCO <- function(h, Kernel, maxEval, n_obs, v) {
 est_risk_PCO <- function(h, Kernel, data, maxEval, m, v) {
   n_obs <- length(data)
   est_bias_PCO(h, Kernel, data, maxEval, m) +
-    est_variance_PCO(h, Kernel, maxEval, n_obs, v)
+    v * est_variance_PCO(h, Kernel, maxEval, n_obs)
 }
 
 #' Optimisation criterion for bandwidth selection using PCO.

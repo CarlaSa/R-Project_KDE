@@ -40,7 +40,7 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector of length 1.
-est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
+est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c) {
   n_obs <- length(data)
   max(
     sapply(bandwidths, function(h_prime) {
@@ -49,7 +49,7 @@ est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
       L2norm_squared(function(x) {
         kde_h_prime(x) - double_kernel_estimator(x)
       }, maxEval) -
-        c * est_variance_GL(h_prime, Kernel, maxEval, n_obs, v)
+        c * est_variance_GL(h_prime, Kernel, maxEval, n_obs)
     }
     ))
 }
@@ -64,8 +64,8 @@ est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
 #' @param n_obs A double vector of length 1. The number of observations.
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
-est_variance_GL <- function(h, Kernel, maxEval, n_obs, v) {
-  v * L2norm_squared(Kernel, maxEval) / (n_obs * h)
+est_variance_GL <- function(h, Kernel, maxEval, n_obs) {
+  L2norm_squared(Kernel, maxEval) / (n_obs * h)
 }
 
 #' Estimator for the Risk.
@@ -82,8 +82,8 @@ est_variance_GL <- function(h, Kernel, maxEval, n_obs, v) {
 #' @return A double vector of length 1.
 est_risk_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
   n_obs <- length(data)
-  est_bias_GL(h, Kernel, data, maxEval, bandwidths, c, v) +
-    est_variance_GL(h, Kernel, maxEval, n_obs, v)
+  est_bias_GL(h, Kernel, data, maxEval, bandwidths, c) +
+    v * est_variance_GL(h, Kernel, maxEval, n_obs)
 }
 
 #' Optimisation criterion for bandwidth selection using the Goldenshluger-Lepski method.
