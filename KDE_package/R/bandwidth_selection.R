@@ -22,10 +22,17 @@ bandwidth_selection <- function(
     ...
 ) {
     criterion_getter <- bandwidth_selection_criteria()[[criterion_method]]
-    if ('m' %in% formalArgs(criterion_getter)) 
-        criterion <- criterion_getter(Kernel, data, m = lower, ...)
-    else
+    if ('lower' %in% formalArgs(criterion_getter)) {
+        if ('upper' %in% formalArgs(criterion_getter)) {
+            criterion <- criterion_getter(Kernel, data, lower = lower, upper = upper, ...)
+        }
+        else {
+            criterion <- criterion_getter(Kernel, data, lower = lower, ...)
+        }
+    }
+    else {
         criterion <- criterion_getter(Kernel, data, ...)
+    }
     optimise(criterion, lower = lower, upper = upper)$minimum
 }
 
