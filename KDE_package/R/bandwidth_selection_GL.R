@@ -95,10 +95,13 @@ est_risk <- function(h, Kernel, data, bandwidths, c, v, maxEval) {
 #' @param c A double vector of length 1. A calibration constant.
 #' @param v A double vector of length 1. A calibration constant.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
+#' @param lower A double vector of length 1. The lowest bandwidth to test.
+#' @param upper A double vector of length 1. The highest bandwidth to test.
+#' @param n_bandwidths A numeric vector of length 1. The number of bandwidths to test, only used if `bandwidths` is set to NULL.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-get_criterion_GL <- function(Kernel, data, bandwidths, c = 1, v = 1, maxEval = 1e6, lower = NULL, upper = NULL, n_bandwidths = 1e2) {
-    if(missing(bandwidths)) {
+get_criterion_GL <- function(Kernel, data, bandwidths = NULL, c = 1, v = 1, maxEval = 1e6, lower = NULL, upper = NULL, n_bandwidths = 1e2) {
+    if(is.null(bandwidths)) {
         stopifnot('Either bandwidths or both lower and upper must be set.' = is.double(lower) && is.double(upper))
         bandwidths <- seq(lower, upper, length.out = n_bandwidths)
     }
