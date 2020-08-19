@@ -11,7 +11,7 @@ get_criterion_GL(
   bandwidths = NULL,
   n_bandwidths = 100,
   c = 1,
-  v = 1,
+  v = 2,
   lower = NULL,
   upper = NULL
 )
