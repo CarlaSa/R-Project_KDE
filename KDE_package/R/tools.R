@@ -23,12 +23,12 @@ setup_cluster <- function(n_cores = -1, use_parallel = NULL, overwrite = NULL, t
     else if(is.null(use_parallel))
         use_parallel <- TRUE
     if(exists('cluster')) {
-        if(overwrite == NULL)
+        if(is.null(overwrite))
             warning('A cluster already exists and will be overwritten.')
         else
             stopifnot('A cluster already exists.' = overwrite == TRUE)
     }
-    if(use_parallel == TRUE) {
+    if(is.null(use_parallel)) {
         cores_available <- parallel::detectCores()
         if(is.null(n_cores))
             n_cores <- cores_available - 1
