@@ -51,7 +51,7 @@ est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c) {
       }, maxEval) -
         c * est_variance_GL(h_prime, Kernel, maxEval, n_obs)
     }
-    ))
+    ), 0)
 }
 
 #' Estimator for the Variance Term.
@@ -102,10 +102,20 @@ est_risk_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
 #' @param upper A double vector of length 1. The highest bandwidth to test.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 1e2, c = 1, v = 2, lower = NULL, upper = NULL) {
+get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 20, c = 1, v = 2, lower = NULL, upper = NULL) {
+    critical_bandwidth <- 0.1
     if(is.null(bandwidths)) {
         stopifnot('Either bandwidths or both lower and upper must be set.' = is.double(lower) && is.double(upper))
+        if(lower < critical_bandwidth) {
+            warning(stringr::str_glue("You have chosen the lowest bandwidth smaller than {critical_bandwidth}. Taking value `lower = {critical_bandwidth}`."))
+            lower <- critical_bandwidth
+        }
         bandwidths <- seq(lower, upper, length.out = n_bandwidths)
+    }
+    else {
+        if(min(bandwidths) < critical_bandwidth) {
+            warning(stringr::str_glue("You have chosen the lowest bandwidth smaller than {critical_bandwidth}. Small values of the bandwidth may lead to wrong results."))
+        }
     }
     force(Kernel)
     force(data)
