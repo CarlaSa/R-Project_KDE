@@ -14,8 +14,6 @@ est_variance_PCO(h, Kernel, maxEval, n_obs)
 \item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 
 \item{n_obs}{A double vector of length 1. The number of observations.}
-
-\item{v}{A double vector of length 1. A calibration constant.}
 }
 \value{
 A double vector.

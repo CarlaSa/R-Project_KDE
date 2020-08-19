@@ -38,7 +38,6 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param bandwidths A double vector. The set of h_prime bandwidths to test.
 #' @param c A double vector of length 1. A calibration constant.
-#' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector of length 1.
 est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c) {
   n_obs <- length(data)
@@ -62,7 +61,6 @@ est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c) {
 #' @param Kernel A real function. The kernel.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param n_obs A double vector of length 1. The number of observations.
-#' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
 est_variance_GL <- function(h, Kernel, maxEval, n_obs) {
   L2norm_squared(Kernel, maxEval) / (n_obs * h)
@@ -77,7 +75,7 @@ est_variance_GL <- function(h, Kernel, maxEval, n_obs) {
 #' @param data A double vector of the sample data to use.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param bandwidths A double vector. The set of h_prime bandwidths to test.
-#' @param m A double vector of length 1. The smallest bandwidth.
+#' @param c A double vector of length 1. A calibration constant for weighing the variance term inside the bias term.
 #' @param v A double vector of length 1. A calibration constant for weighing the variance term.
 #' @return A double vector of length 1.
 est_risk_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {

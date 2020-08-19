@@ -5,8 +5,6 @@
 #' @param f A real function
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A double vector of length 1. The L2-norm squared of f.
-#' @examples
-#' L2norm_squared(kernels$triangular)
 L2norm_squared <- function(f, maxEval) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))
@@ -20,8 +18,6 @@ L2norm_squared <- function(f, maxEval) {
 #'
 #' @param f A real function
 #' @return A double vector of length 1. The L2-norm of f.
-#' @examples
-#' L2norm(kernels$triangular)
 L2norm <- function(f) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))

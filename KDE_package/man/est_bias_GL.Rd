@@ -18,8 +18,6 @@ est_bias_GL(h, Kernel, data, maxEval, bandwidths, c)
 \item{bandwidths}{A double vector. The set of h_prime bandwidths to test.}
 
 \item{c}{A double vector of length 1. A calibration constant.}
-
-\item{v}{A double vector of length 1. A calibration constant.}
 }
 \value{
 A double vector of length 1.

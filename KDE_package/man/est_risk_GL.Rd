@@ -17,9 +17,9 @@ est_risk_GL(h, Kernel, data, maxEval, bandwidths, c, v)
 
 \item{bandwidths}{A double vector. The set of h_prime bandwidths to test.}
 
-\item{v}{A double vector of length 1. A calibration constant for weighing the variance term.}
+\item{c}{A double vector of length 1. A calibration constant for weighing the variance term inside the bias term.}
 
-\item{m}{A double vector of length 1. The smallest bandwidth.}
+\item{v}{A double vector of length 1. A calibration constant for weighing the variance term.}
 }
 \value{
 A double vector of length 1.
