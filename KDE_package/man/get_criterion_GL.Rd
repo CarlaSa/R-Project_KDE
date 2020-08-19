@@ -4,20 +4,36 @@
 \alias{get_criterion_GL}
 \title{Optimisation criterion for bandwidth selection using the Goldenshluger-Lepski method.}
 \usage{
-get_criterion_GL(Kernel, data, bandwidths, c = 1, v = 1, maxEval = 1e+06)
+get_criterion_GL(
+  Kernel,
+  data,
+  maxEval = 1e+06,
+  bandwidths = NULL,
+  n_bandwidths = 100,
+  c = 1,
+  v = 2,
+  lower = NULL,
+  upper = NULL
+)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}
 
 \item{data}{A double vector of the sample data to use.}
 
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
+
 \item{bandwidths}{A double vector containing the bandwidths to try.}
+
+\item{n_bandwidths}{A numeric vector of length 1. The number of bandwidths to test, only used if `bandwidths` is set to NULL.}
 
 \item{c}{A double vector of length 1. A calibration constant.}
 
 \item{v}{A double vector of length 1. A calibration constant.}
 
-\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
+\item{lower}{A double vector of length 1. The lowest bandwidth to test.}
+
+\item{upper}{A double vector of length 1. The highest bandwidth to test.}
 }
 \value{
 A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection

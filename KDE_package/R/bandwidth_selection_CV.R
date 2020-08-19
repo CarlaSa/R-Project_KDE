@@ -41,7 +41,7 @@ get_criterion_CV <- function(Kernel, data, maxEval = 1e6){
     force(data)
     force(maxEval)
     function(hvals) {
-        sapply(hvals, criterion_CV, Kernel, data, maxEval)
+        p_sapply(hvals, criterion_CV, Kernel, data, maxEval)
     }
 }
 

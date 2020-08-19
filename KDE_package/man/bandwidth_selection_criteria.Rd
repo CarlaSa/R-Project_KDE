@@ -6,6 +6,9 @@
 \usage{
 bandwidth_selection_criteria()
 }
+\value{
+A list of functions. The list of bandwidth selection criteria provided by the package.
+}
 \description{
 Getters for the bandwidth selection criteria.
 }

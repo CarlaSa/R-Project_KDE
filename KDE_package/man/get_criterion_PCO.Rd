@@ -4,18 +4,18 @@
 \alias{get_criterion_PCO}
 \title{Optimisation criterion for bandwidth selection using PCO.}
 \usage{
-get_criterion_PCO(Kernel, data, m, v = 1, maxEval = 1e+06)
+get_criterion_PCO(Kernel, data, maxEval = 1e+06, lower, v = 1)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}
 
 \item{data}{A double vector of the sample data to use.}
 
-\item{m}{A double vector of length 1. The smallest bandwidth.}
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
+
+\item{lower}{A double vector of length 1. The lowest bandwidth, used for comparison to overfitting.}
 
 \item{v}{A double vector of length 1. A calibration constant.}
-
-\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }
 \value{
 A vectorised single-parameter function. The PCO bandwidth selection

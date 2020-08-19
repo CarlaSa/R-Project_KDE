@@ -36,6 +36,6 @@ get_kde <- function(h, Kernel, data) {
     stopifnot('Kernel needs to be a Kernel object, a function or the name of a Kernel in `kernels`.' = is_Kernel(Kernel) || is.function(Kernel))
     
     function(x) {
-        sapply(x, kde, h, Kernel, data)
+        p_sapply(x, kde, h, Kernel, data)
     }
 }

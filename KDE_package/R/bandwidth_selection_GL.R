@@ -23,7 +23,7 @@
 get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
   kde_h <- get_kde(h, Kernel, data)
   Kernel_h_prime <- function(x) {
-    sapply(x, scaled_kernel, h_prime, Kernel)
+    p_sapply(x, scaled_kernel, h_prime, Kernel)
   }
   convolution(Kernel_h_prime, kde_h, maxEval)
 }
@@ -43,7 +43,7 @@ get_double_kernel_estimator <- function(h, h_prime, Kernel, data, maxEval) {
 est_bias_GL <- function(h, Kernel, data, maxEval, bandwidths, c) {
   n_obs <- length(data)
   max(
-    sapply(bandwidths, function(h_prime) {
+    p_sapply(bandwidths, function(h_prime) {
       kde_h_prime <- get_kde(h_prime, Kernel, data)
       double_kernel_estimator <- get_double_kernel_estimator(h, h_prime, Kernel, data, maxEval)
       L2norm_squared(function(x) {
@@ -102,7 +102,7 @@ est_risk_GL <- function(h, Kernel, data, maxEval, bandwidths, c, v) {
 #' @param upper A double vector of length 1. The highest bandwidth to test.
 #' @return A vectorised single-parameter function. The Goldenshluger-Lepski bandwidth selection
 #' optimisation criterion.
-get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 1e2, c = 1, v = 1, lower = NULL, upper = NULL) {
+get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_bandwidths = 1e2, c = 1, v = 2, lower = NULL, upper = NULL) {
     if(is.null(bandwidths)) {
         stopifnot('Either bandwidths or both lower and upper must be set.' = is.double(lower) && is.double(upper))
         bandwidths <- seq(lower, upper, length.out = n_bandwidths)
@@ -114,6 +114,6 @@ get_criterion_GL <- function(Kernel, data, maxEval = 1e6, bandwidths = NULL, n_b
     force(c)
     force(v)
     function(h_vals) {
-        sapply(h_vals, function(h) est_risk_GL(h, Kernel, data, maxEval, bandwidths, c, v))
+        p_sapply(h_vals, function(h) est_risk_GL(h, Kernel, data, maxEval, bandwidths, c, v))
     }
 }
