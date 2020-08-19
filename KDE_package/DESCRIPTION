@@ -1,6 +1,6 @@
 Package: KDE
-Title: Implementing the Kernel Desity Estimator with different methods for bandwith finding
-Description: TODO
+Title: Tools for Kernel Density Estimation including Bandwidth Selection Methods.
+Description: A package containing tools for Kernel Density Estimation, including rejection sampling the to simulate data from density functions, methods for bandwidth selection, and implementation of kernels.
 Version: 0.0
 Encoding: UTF-8
 Authors@R:
@@ -17,13 +17,6 @@ Authors@R:
               email = "carlachristin@googlemail.com", 
               role = c("aut", "cre"))
             )
-Imports:
-  stringr,
-  shiny,
-  cubature,
-  methods,
-  stats,
-  rlang
 Suggests: 
     knitr,
     rmarkdown,
@@ -34,3 +27,10 @@ VignetteBuilder:
     shiny
 RoxygenNote: 7.1.1
 License: MIT + file LICENSE
+Imports: 
+    stringr,
+    shiny,
+    cubature,
+    methods,
+    stats,
+    rlang

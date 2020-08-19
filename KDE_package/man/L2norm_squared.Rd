@@ -17,6 +17,3 @@ A double vector of length 1. The L2-norm squared of f.
 \description{
 Calculate the L2-norm squared of a real function using integrate.
 }
-\examples{
-L2norm_squared(kernels$triangular)
-}

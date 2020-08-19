@@ -15,6 +15,3 @@ A double vector of length 1. The L2-norm of f.
 \description{
 Calculate the L2-norm of a real function using integrate.
 }
-\examples{
-L2norm(kernels$triangular)
-}
