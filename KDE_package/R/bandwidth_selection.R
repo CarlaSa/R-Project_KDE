@@ -11,6 +11,7 @@
 #' @param lower A double vector of length 1. The lowest bandwidth to test.
 #' @param upper A double vector of length 1. The greatest bandwidth to test.
 #' @param ... Optional arguments for the criterion function.
+#' @param set_up_cluster A logical vector of length 1. Whether parallelisation should be activated if `setup_cluster` has not been run yet.
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bandwidth_selection <- function(
@@ -19,8 +20,13 @@ bandwidth_selection <- function(
     data,
     lower = 1e-3,
     upper = 1e0,
-    ...
+    ...,
+    set_up_cluster = TRUE
 ) {
+    if(set_up_cluster && !exists('cluster')) {
+        n_cores <- setup_cluster()
+        message(stringr::str_glue('A cluster of {n_cores} cores has been set up and will be used in the future. See `?KDE::setup_cluster` for details.'))
+    }
     criterion_getter <- bandwidth_selection_criteria()[[criterion_method]]
     if ('lower' %in% formalArgs(criterion_getter)) {
         if ('upper' %in% formalArgs(criterion_getter)) {
