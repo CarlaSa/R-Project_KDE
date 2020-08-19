@@ -1,5 +1,5 @@
 Package: KDE
-Title: Tools for Kernel Density Estimation including Bandwidth Selection Methods.
+Title: Tools for Kernel Density Estimation including Bandwidth Selection Methods
 Description: A package containing tools for Kernel Density Estimation, including rejection sampling the to simulate data from density functions, methods for bandwidth selection, and implementation of kernels.
 Version: 0.0
 Encoding: UTF-8
