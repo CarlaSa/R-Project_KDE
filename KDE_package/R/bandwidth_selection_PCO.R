@@ -84,7 +84,7 @@ get_criterion_PCO <- function(Kernel, data, maxEval = 1e6, lower, v = 1) {
   force(lower)
   force(v)
   function(bandwidths) {
-    sapply(bandwidths, function(h) est_risk_PCO(h, Kernel, data, maxEval, lower, v))
+    p_sapply(bandwidths, function(h) est_risk_PCO(h, Kernel, data, maxEval, lower, v))
   }
 }
 

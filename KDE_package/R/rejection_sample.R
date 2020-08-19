@@ -69,7 +69,7 @@ rejection_sample <- function(n_obs,
                              n_iter = 10
                             ) {
     helper_density <- attr(helper, 'density')
-    sapply(seq(n_obs), function(i) {
+    p_sapply(seq(n_obs), function(i) {
         while (TRUE) {
             y <- helper()
             u <- runif(1, 0, 1)

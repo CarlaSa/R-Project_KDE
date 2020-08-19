@@ -4,7 +4,7 @@
 #' @return A vectorised single-parameter function.
 sapplify <- function(f) {
     function(a) {
-        sapply(a, f)
+        p_sapply(a, f)
     }
 }
 
