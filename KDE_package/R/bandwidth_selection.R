@@ -45,7 +45,6 @@ bandwidth_selection <- function(
 #' Getters for the bandwidth selection criteria.
 #' 
 #' @return A list of functions. The list of bandwidth selection criteria provided by the package.
-#' @export
 bandwidth_selection_criteria <- function(){
   list(
     CV = get_criterion_CV,

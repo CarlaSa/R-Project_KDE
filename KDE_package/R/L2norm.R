@@ -7,7 +7,6 @@
 #' @return A double vector of length 1. The L2-norm squared of f.
 #' @examples
 #' L2norm_squared(kernels$triangular)
-#' @export
 L2norm_squared <- function(f, maxEval) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))
@@ -23,7 +22,6 @@ L2norm_squared <- function(f, maxEval) {
 #' @return A double vector of length 1. The L2-norm of f.
 #' @examples
 #' L2norm(kernels$triangular)
-#' @export
 L2norm <- function(f) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))
