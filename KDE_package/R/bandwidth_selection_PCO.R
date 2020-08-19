@@ -70,20 +70,20 @@ est_risk <- function(h, Kernel, data, m, v, maxEval) {
 #'
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
-#' @param m A double vector of length 1. The smallest bandwidth.
+#' @param lower A double vector of length 1. The lowest bandwidth, used for comparison to overfitting.
 #' @param v A double vector of length 1. A calibration constant.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
 #' @export
-get_criterion_PCO <- function(Kernel, data, m, v = 1, maxEval=1e6) {
+get_criterion_PCO <- function(Kernel, data, lower, v = 1, maxEval = 1e6) {
   force(Kernel)
   force(data)
-  force(m)
+  force(lower)
   force(v)
   force(maxEval)
   function(bandwidths) {
-    sapply(bandwidths, function(h) est_risk(h, Kernel, data, m, v, maxEval))
+    sapply(bandwidths, function(h) est_risk(h, Kernel, data, lower, v, maxEval))
   }
 }
 
