@@ -17,7 +17,7 @@ bandwidth_selection(
 \item{criterion_method}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
 "CV" the Cross Validation method
 "GL" the Goldenshluger-Lepski method
-"PCO" the PCO method}
+"PCO" the Penalised Comparison to Overfitting method}
 
 \item{Kernel}{A real function. The kernel.}
 

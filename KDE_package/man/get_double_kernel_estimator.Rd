@@ -11,6 +11,8 @@ get_double_kernel_estimator(h, h_prime, Kernel, data, maxEval)
 
 \item{h_prime}{A double vector of length 1. Another bandwidth.}
 
+\item{Kernel}{A real function. The kernel.}
+
 \item{data}{A double vector of the sample data to use.}
 
 \item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
