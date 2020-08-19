@@ -5,7 +5,7 @@
 #' @param criterion_method Keyword of the bandwidth selection algorithm to use. Implimented are: 
 #' "CV" the Cross Validation method
 #' "GL" the Goldenshluger-Lepski method
-#' "PCO" the PCO method
+#' "PCO" the Penalised Comparison to Overfitting method
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
 #' @param lower A double vector of length 1. The lowest bandwidth to test.
@@ -38,8 +38,7 @@ bandwidth_selection <- function(
 
 #' Getters for the bandwidth selection criteria.
 #' 
-#' 
-#'
+#' @return A list of functions. The list of bandwidth selection criteria provided by the package.
 #' @export
 bandwidth_selection_criteria <- function(){
   list(
