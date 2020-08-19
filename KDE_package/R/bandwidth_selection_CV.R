@@ -18,7 +18,7 @@ criterion_CV <- function(h, Kernel, data, maxEval){
   temp <- 0
   for (i in 1:n){
     for (j in 1: i){
-      if (i != j) temp = temp + Kernel( (Z[i] - Z[j]) / h )
+      if (i != j) temp = temp + Kernel( (data[i] - data[j]) / h )
     }
   }
   
