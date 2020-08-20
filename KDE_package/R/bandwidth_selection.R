@@ -15,15 +15,21 @@
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @export
 bandwidth_selection <- function(criterion_method,
-                                Kernel,
+                                Kernel = kernels$gaussian,
                                 data,
                                 lower = 1e-3,
                                 upper = 1e0,
                                 ...,
                                 set_up_cluster = TRUE) {
+  # check inputs
   bws_methods <- bandwidth_selection_criteria()
   stopifnot("criterion_method must be `GL`,`PCO` or `CV`" = criterion_method %in% names(bws_methods))
   stopifnot("Kernel not valid" = is_Kernel(Kernel))
+  stopifnot("data should be numeric" = is.numeric(data))
+  stopifnot("data should be vector" = is.vector(data))
+  stopifnot("lower should be a number" = is.numeric(lower) & length(lower) == 1)
+  stopifnot("upper should be a number" = is.numeric(upper) & length(upper) == 1)
+  
   if (set_up_cluster && !exists('cluster')) {
     n_cores <- setup_cluster()
     message(
