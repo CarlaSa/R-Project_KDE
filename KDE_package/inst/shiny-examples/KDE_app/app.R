@@ -48,7 +48,7 @@ ui <- fluidPage(
                 checkboxInput('extra_fixed', 'Display an extra KDE using a manually controlled fixed bandwidth'),
                 fluidRow(
                     column(9,
-                        selectInput('bandwidth_selection_method', 'bandwidth selection method', KDE:::bandwidth_selection_criteria())
+                        selectInput('bandwidth_selection_method', 'bandwidth selection method', names(KDE:::bandwidth_selection_criteria()))
                     ),
                     column(3,
                         actionButton('run_bws', 'Run')
@@ -68,7 +68,7 @@ ui <- fluidPage(
     )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
     notification_id <- NULL
     data <- NULL
     data_file_mode <- FALSE
@@ -134,12 +134,40 @@ server <- function(input, output) {
         }
     )
     
+    observeEvent(input$pdf_factory, {
+        pdf_factory <- pdf_factories[[input$pdf_factory]]
+        if(identical(pdf_factory, pdf_factories$custom))
+            f_text <- formals(pdf_factory)[[1]]
+        else {
+            pdf <- pdf_factory()
+            env <- as.list(environment(pdf))
+            f_text <- deparse(body(pdf))
+            f_text <- stringr::str_c(f_text, collapse = ';')
+            for(n in names(env)) {
+                pat <- stringr::str_glue('(?<!\\w){n}(?!\\w)')
+                f_text <- stringr::str_replace_all(f_text, pat, as.character(env[[n]]))
+            }
+        }
+        
+        updateTextInput(session, 'f', value = f_text)
+    })
+
     # resample button
     observeEvent(input$resample, {
         resample_waiting <<- TRUE
         .get_data()
     })
     
+    # compute bandwidth
+    observeEvent(input$run_bws, {
+        computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3)
+        output$h_bws <- renderText(computed_bandwidth)
+    })
+
+    observeEvent(input$use_h_bws, {
+        updateSliderInput(session, 'h', value = computed_bandwidth)
+    })
+
     # extra fixed mode:
     # display a separate KDE with fixed bandwidth
     .is_fixed_mode <- reactive({
@@ -153,7 +181,7 @@ server <- function(input, output) {
             input$h
     })
 
-   output$plot <- renderPlot({
+    output$plot <- renderPlot({
         hist(.get_data(), breaks = 1000, freq = FALSE, xlim = input$plot_range, border = 'light grey')
         f1 <- .get_f()
         curve(f1, add = TRUE, col = 'green')
@@ -174,6 +202,7 @@ server <- function(input, output) {
               col = c('light grey', 'green', 'blue', 'red'),
               lwd = c(3, 1, 1, 1))
     })
+
 }
 
 shinyApp(ui, server)
