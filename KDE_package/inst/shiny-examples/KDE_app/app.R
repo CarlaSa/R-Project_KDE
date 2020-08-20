@@ -13,7 +13,7 @@ ui <- fluidPage(
     fluidRow(
         column(3,
                h4('true density function'),
-                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories), selected = 'normal'),
+                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories), selected = 'Normal'),
                 'Your function expression:',
                 textInput('f', 'f <- function(x)', value = '1/(1 * sqrt(2 * pi)) * exp(-1/2 * ((x - 0)/1)^2)')
                ),
@@ -128,7 +128,7 @@ server <- function(input, output, session) {
     
     observeEvent(input$pdf_factory, {
         pdf_factory <- pdf_factories[[input$pdf_factory]]
-        if(identical(pdf_factory, pdf_factories$custom))
+        if(identical(pdf_factory, pdf_factories$Custom))
             f_text <- formals(pdf_factory)[[1]]
         else {
             pdf <- pdf_factory()
@@ -147,7 +147,7 @@ server <- function(input, output, session) {
     # compute bandwidth
     observeEvent(input$run_bws, {
         withProgress(message = 'computing the bandwidth', value = 0.1, {
-            computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3, set_up_cluster = FALSE)
+            computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3)
             incProgress(0.85)
             output$h_bws <- renderText(computed_bandwidth)
             incProgress(0.05)
