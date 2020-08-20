@@ -3,13 +3,13 @@
 #' Get a Cauchy distribution function.
 #'
 #' @param x0 A double vector of length 1. The location parameter.
-#' @param gamma A double vector of length 1. The scale parameter.
+#' @param gamma A double vector of length 1. The scale parameter. It should be greater than 0
 #' @return A vectorised function. A Cauchy distribution function.
 #' @export
 get_cauchy <- function(x0 = 0, gamma = 0.5) {
     stopifnot("x0 should be a double vector of length 1" = is.double(x0) & length(x0) == 1)
-    stopifnot("gamma should be a double vector of length 1" = is.double(gamma) & length(gamma) == 1)
-    
+    stopifnot("gamma should be a double vector of length 1" = is.double(gamma) & length(gamma) == 1 & gamma > 0)
+    stopifnot("parameters should not be NAs" = !(is.na(x0) | is.na(gamma)))
     function(x)
         1/(pi * gamma * (1 + ((x - x0) / gamma)^2))
 }
@@ -17,37 +17,46 @@ get_cauchy <- function(x0 = 0, gamma = 0.5) {
 #' Get a uniform distribution function.
 #'
 #' @param a A double vector of length 1. A location parameter.
-#' @param b A double vector of length 1. A location parameter.
+#' @param b A double vector of length 1. A location parameter. b should be bigger than a
 #' @return A vectorised function. A uniform distribution function.
 #' @export
 get_uniform <- function(a = -1, b = 1) {
     stopifnot("a should be a double vector of length 1" = is.double(a) & length(a) == 1)
     stopifnot("b should be a double vector of length 1" = is.double(b) & length(b) == 1)
+    stopifnot("b should be bigger than a" = a < b)
+    stopifnot("parameters should not be NAs" = !(is.na(a) | is.na(b)))
     function(x)
         abs(1/(b-a)) * (a <= x & x <= b)
 }
 
 #' Get an exponential distribution function.
 #'
-#' @param lambda A double vector of length 1.
+#' @param lambda A double vector of length 1. It should be bigger than 0
 #' The rate (inverse scale) parameter.
 #' @return A vectorised function. An exponential distribution function.
 #' @export
 get_exponential <- function(lambda = 1) {
-    stopifnot("lambda should be a double vector of length 1" = is.double(lambda) & length(lambda) == 1)
-    function(x)
-        lambda * exp(-lambda * x) * (x >= 0)
+    stopifnot("lambda should be a double vector of length 1 bigger than 0" = is.double(lambda) & length(lambda) == 1 & lambda > 0)
+    stopifnot("parameters should not be NAs" = !(is.na(lambda)))
+    function(x){
+        temp <- x>= 0
+        temp[temp] <- lambda * exp(-lambda * x[temp])
+        return(temp)
+    }
 }
 
 #' Get a normal distribution function.
 #'
 #' @param mu A double vector of length 1. The mean.
-#' @param sigma A double vector of length 1. The standard deviation.
+#' @param sigma A double vector of length 1. The standard deviation. Should not be 0
 #' @return A vectorised function. A normal distribution function.
 #' @export
 get_normal <- function(mu = 0, sigma = 1) {
     stopifnot("mu should be a double vector of length 1" = is.double(mu) & length(mu) == 1)
     stopifnot("sigma should be a double vector of length 1" = is.double(sigma) & length(sigma) == 1)
+    stopifnot("sigma should not be zero" = sigma != 0)
+    stopifnot("parameters should not be NAs" = !(is.na(mu) | is.na(sigma)))
+    
     function(x)
         1/(sigma * sqrt(2 * pi)) * exp(-1/2 * ((x - mu)/sigma)^2)
 }
@@ -55,12 +64,14 @@ get_normal <- function(mu = 0, sigma = 1) {
 #' Get a Laplace distribution function.
 #'
 #' @param mu A double vector of length 1. The mean.
-#' @param b A double vector of length 1. The scale parameter.
+#' @param b A double vector of length 1. The scale parameter. Should be greater than 0
 #' @return A vectorised function. A Laplace distribution function.
 #' @export
 get_laplace <- function(mu = 0, b = 1) {
     stopifnot("mu should be a double vector of length 1" = is.double(mu) & length(mu) == 1)
     stopifnot("b should be a double vector of length 1" = is.double(b) & length(b) == 1)
+    stopifnot("parameters should not be NAs" = !(is.na(mu) | is.na(b)))
+    stopifnot("b should be greater than 0" = b > 0)
     function(x) {
         1/(2*b) * exp(-abs(x - mu)/b)
     }
@@ -72,7 +83,7 @@ get_laplace <- function(mu = 0, b = 1) {
 #' @return A vectorised function. A custom distribution function.
 #' @export
 get_custom <- function(str = 'abs(x)/4 * (abs(x) <= 2)') {
-    stopifnot("str should be a character vector of lenght " = is.character(str) & length(str) == 1)
+    stopifnot("str should be a character vector of lenght " = is.character(str) & length(str) == 1 & !is.na(str))
     function(x) eval(rlang::parse_expr(str))
 }
 
