@@ -5,7 +5,6 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             sliderInput('plot_range', 'plot range', min = -10, max = 10, value = c(-3, 3), step = 0.25)
-            #sliderInput('plot_factor', 'scale factor for the histogram', min = 0, max = 2, value = 1, step = 0.05)
         ),
         mainPanel(
             plotOutput('plot')
@@ -14,9 +13,9 @@ ui <- fluidPage(
     fluidRow(
         column(3,
                h4('true density function'),
-                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories)),
+                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories), selected = 'normal'),
                 'Your function expression:',
-                textInput('f', 'f <- function(x)', value = 'abs(x)/4 * (abs(x) <= 2)')
+                textInput('f', 'f <- function(x)', value = '1/(1 * sqrt(2 * pi)) * exp(-1/2 * ((x - 0)/1)^2)')
                ),
         column(3,
                 h4('sampling'),
@@ -26,7 +25,7 @@ ui <- fluidPage(
                                      numericInput('n_iter', 'average number of iterations per sample',
                                                   value = 10
                                                  ),
-                                     selectInput('helper', 'helper distribution', helpers)
+                                     selectInput('helper', 'helper distribution', names(helpers), selected = 'normal')
                                     ),
                             tabPanel('read/save data',
                                      fileInput("rds_file", "Choose RDS File",
@@ -36,7 +35,6 @@ ui <- fluidPage(
                                         ),
                                      downloadButton('rds_download', 'Download data')
                                     )),
-                #actionButton('resample', 'resample (not working yet)')
               ),
         column(3,
                 h4('kernel'),
@@ -48,7 +46,7 @@ ui <- fluidPage(
                 checkboxInput('extra_fixed', 'Display an extra KDE using a manually controlled fixed bandwidth'),
                 fluidRow(
                     column(9,
-                        selectInput('bandwidth_selection_method', 'bandwidth selection method', KDE:::bandwidth_selection_criteria())
+                        selectInput('bandwidth_selection_method', 'bandwidth selection method', names(KDE:::bandwidth_selection_criteria()))
                     ),
                     column(3,
                         actionButton('run_bws', 'Run')
@@ -68,15 +66,12 @@ ui <- fluidPage(
     )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
     notification_id <- NULL
     data <- NULL
     data_file_mode <- FALSE
-    # workaround to make the 'resample' button working:
-    # we observe this 'state' boolean and resample when it is TRUE
-    # (reset it to FALSE when done)
-    resample_waiting <- FALSE
-    # of not NULL, this is the bandwidth for the kde plotted in blue colour:
+
+    # if not NULL, this is the bandwidth for the kde plotted in blue colour:
     # it can be set by the value computed by some bandwidth selection algorithm
     computed_bandwidth <- NULL
     
@@ -100,30 +95,27 @@ server <- function(input, output) {
     
     # sampling
     .get_data <- reactive({
-        if(resample_waiting ||
-           is.null(data) || length(data) != as.integer(input$n_obs) ||
+        if(is.null(data) || length(data) != as.integer(input$n_obs) ||
            data_file_mode != !is.null(input$rds_file)) {
             data_file_mode <- !is.null(input$rds_file)
-            resample_waiting <- FALSE;
             .resample()
         }
         data
     })
     .resample <- function() {
         if(is.null(input$rds_file))
-            data <<- rejection_sample(as.integer(input$n_obs), .get_f_silently(),
-                                      #helper_distribution = input$helper$distribution,
-                                      #helper_density = input$helper$density,
-                                      n_iter = as.integer(input$n_iter)
-                                     )
+            withProgress(message = 'generating random samples', value = 0.1, {
+                data <<- rejection_sample(as.integer(input$n_obs), .get_f_silently(),
+                                          helper = helpers[[input$helper]],
+                                          n_iter = as.integer(input$n_iter)
+                                         )
+                incProgress(0.9)
+            })
         else {
             data <<- readRDS(input$rds_file$datapath)
         }
     }
-    
-    # data upload mechanism
-    #output
-    
+       
     # download button
     output$rds_download <- downloadHandler(
         filename = function() {
@@ -134,26 +126,52 @@ server <- function(input, output) {
         }
     )
     
-    # resample button
-    observeEvent(input$resample, {
-        resample_waiting <<- TRUE
-        .get_data()
+    observeEvent(input$pdf_factory, {
+        pdf_factory <- pdf_factories[[input$pdf_factory]]
+        if(identical(pdf_factory, pdf_factories$custom))
+            f_text <- formals(pdf_factory)[[1]]
+        else {
+            pdf <- pdf_factory()
+            env <- as.list(environment(pdf))
+            f_text <- deparse(body(pdf))
+            f_text <- stringr::str_c(f_text, collapse = ';')
+            for(n in names(env)) {
+                pat <- stringr::str_glue('(?<!\\w){n}(?!\\w)')
+                f_text <- stringr::str_replace_all(f_text, pat, as.character(env[[n]]))
+            }
+        }
+        
+        updateTextInput(session, 'f', value = f_text)
     })
     
+    # compute bandwidth
+    observeEvent(input$run_bws, {
+        withProgress(message = 'computing the bandwidth', value = 0.1, {
+            computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3, set_up_cluster = FALSE)
+            incProgress(0.85)
+            output$h_bws <- renderText(computed_bandwidth)
+            incProgress(0.05)
+        })
+    })
+
+    observeEvent(input$use_h_bws, {
+        updateSliderInput(session, 'h', value = computed_bandwidth)
+    })
+
     # extra fixed mode:
     # display a separate KDE with fixed bandwidth
     .is_fixed_mode <- reactive({
         input$extra_fixed
     })
     
-    .get_bandwidth <- reactive({
+    .get_bandwidth <- function(){
         if(!is.null(computed_bandwidth))
             computed_bandwidth
         else
             input$h
-    })
+    }
 
-   output$plot <- renderPlot({
+    output$plot <- renderPlot({
         hist(.get_data(), breaks = 1000, freq = FALSE, xlim = input$plot_range, border = 'light grey')
         f1 <- .get_f()
         curve(f1, add = TRUE, col = 'green')
@@ -174,6 +192,7 @@ server <- function(input, output) {
               col = c('light grey', 'green', 'blue', 'red'),
               lwd = c(3, 1, 1, 1))
     })
+
 }
 
 shinyApp(ui, server)
