@@ -25,9 +25,10 @@ test_that("bandwidth selection: CV", {
 test_that("bandwidth selection: GL", {
   data <- rejection_sample(100, kernels$gaussian)
   kernel <- kernels$gaussian
-  h <- bandwidth_selection("GL", kernel, data, maxEval = 10)
+  h <- bandwidth_selection("GL", kernel, data, maxEval = 10, lower=0.1)
   expect_true(is.numeric(h))
   expect_gte(h, 0)
   expect_lte(h, 1)
   expect_length(h, 1)
+  expect_warning(bandwidth_selection("GL", kernel, data, maxEval = 10))
 })
