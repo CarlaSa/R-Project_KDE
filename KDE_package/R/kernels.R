@@ -5,6 +5,8 @@
 #' @return A Kernel object.
 #' @export
 Kernel <- function(func, maxEval = 1e6) {
+    stopifnot("func must be a vectorised function"  = is.function(func)) #vectorised?
+    stopifnot("maxEval must have numerical value" = is.numeric(maxEval))
     K <- func
     attr(K, 'L2norm_squared') <- L2norm_squared(K, maxEval)
     attr(K, 'L2norm') <- sqrt(attr(K, 'L2norm_squared'))

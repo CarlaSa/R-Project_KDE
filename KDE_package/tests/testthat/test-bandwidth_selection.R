@@ -1,0 +1,33 @@
+test_that("bandwidth selection: errors", {
+  data <- rejection_sample(100, kernels$gaussian)
+  kernel <- kernels$gaussian
+  expect_error(bandwidth_selection("invalid", kernel, data))
+})
+
+test_that("bandwidth selection: PCO", {
+  data <- rejection_sample(100, kernels$gaussian)
+  kernel <- kernels$gaussian
+  h <- bandwidth_selection("PCO", kernel, data, maxEval = 100)
+  expect_true(is.numeric(h))
+  expect_gte(h, 0)
+  expect_length(h, 1)
+})
+
+test_that("bandwidth selection: CV", {
+  data <- rejection_sample(100, kernels$gaussian)
+  kernel <- kernels$gaussian
+  h <- bandwidth_selection("CV", kernel, data, maxEval = 100)
+  expect_true(is.numeric(h))
+  expect_gte(h, 0)
+  expect_length(h, 1)
+})
+
+test_that("bandwidth selection: GL", {
+  data <- rejection_sample(100, kernels$gaussian)
+  kernel <- kernels$gaussian
+  h <- bandwidth_selection("GL", kernel, data, maxEval = 10)
+  expect_true(is.numeric(h))
+  expect_gte(h, 0)
+  expect_lte(h, 1)
+  expect_length(h, 1)
+})
