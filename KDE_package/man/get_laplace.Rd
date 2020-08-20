@@ -9,7 +9,7 @@ get_laplace(mu = 0, b = 1)
 \arguments{
 \item{mu}{A double vector of length 1. The mean.}
 
-\item{b}{A double vector of length 1. The scale parameter.}
+\item{b}{A double vector of length 1. The scale parameter. Should be greater than 0}
 }
 \value{
 A vectorised function. A Laplace distribution function.

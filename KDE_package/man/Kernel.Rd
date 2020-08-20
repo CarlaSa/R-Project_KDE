@@ -7,7 +7,7 @@
 Kernel(func, maxEval = 1e+06)
 }
 \arguments{
-\item{func}{A function. The kernel function. Must be vectorised.}
+\item{func}{A function. The kernel function.}
 
 \item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
 }

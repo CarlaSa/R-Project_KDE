@@ -13,4 +13,13 @@ pdf_factories
 \description{
 All probability density functions available in one list.
 }
+\details{
+Users can use these function factories to set their own parameters.\cr
+Options and defaults are as follows:  \cr
+\code{pdf_factories$Cauchy(x0 = 0, gamma = 0.5)} \cr
+\code{pdf_factories$Uniform(a = -1, b = 1)} \cr
+\code{pdf_factories$Expo(lambda = 1)} \cr
+\code{pdf_factories$Laplace(mu = 0, b = 1)} \cr
+\code{pdf_factories$Custom(str = 'abs(x)/4 * (abs(x) <= 2)')}
+}
 \keyword{datasets}

@@ -7,7 +7,7 @@
 rejection_sample(n_obs, f, helper = helpers$normal, n_iter = 10)
 }
 \arguments{
-\item{n_obs}{An integer vector of length 1. The number of observations.}
+\item{n_obs}{A positive integer vector of length 1. The number of observations.}
 
 \item{f}{A probability density function to simulate observations from.}
 

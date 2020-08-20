@@ -6,7 +6,7 @@
 \usage{
 bandwidth_selection(
   criterion_method,
-  Kernel,
+  Kernel = kernels$gaussian,
   data,
   lower = 0.001,
   upper = 1,
@@ -15,10 +15,10 @@ bandwidth_selection(
 )
 }
 \arguments{
-\item{criterion_method}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
-"CV" the Cross Validation method
-"GL" the Goldenshluger-Lepski method
-"PCO" the Penalised Comparison to Overfitting method}
+\item{criterion_method}{A string. Keyword of the bandwidth selection
+algorithm to use. Implemented are: "CV" the Cross Validation method "GL"
+the Goldenshluger-Lepski method "PCO" the Penalised Comparison to
+Overfitting method}
 
 \item{Kernel}{A real function. The kernel.}
 
@@ -30,11 +30,24 @@ bandwidth_selection(
 
 \item{...}{Optional arguments for the criterion function.}
 
-\item{set_up_cluster}{A logical vector of length 1. Whether parallelisation should be activated if `setup_cluster` has not been run yet.}
+\item{set_up_cluster}{A logical vector of length 1. Whether parallelisation
+should be activated if `setup_cluster` has not been run yet.}
 }
 \value{
 A double vector of length 1. The optimal bandwidth.
 }
 \description{
 Find the optimal value for the bandwidth h.
+}
+\details{
+Optional arguments and defaults for PCO: \cr \code{v = 1}, a
+  calibration constant for the variance term. \cr \cr Optional arguments and
+  defaults for GL: \cr \code{bandwidths = NULL}, a sequence of bandwidths to
+  use as h_prime. Otherwise: \cr \code{n_bandwidths = 20}, if no set
+  bandwidths are provided, a sequence of this length is generated between
+  \code{lower} and \code{upper}. \cr \code{c = 1}, the calibration constant
+  in the bias term. \cr \code{v = 2}, a calibration constant for the variance
+  term. \cr Note that in the GL method, \code{lower} is set to a minimum
+  value of \code{0.1}, a critical bandwidth below which the implementation is
+  no longer stable.
 }

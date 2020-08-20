@@ -9,7 +9,7 @@ get_uniform(a = -1, b = 1)
 \arguments{
 \item{a}{A double vector of length 1. A location parameter.}
 
-\item{b}{A double vector of length 1. A location parameter.}
+\item{b}{A double vector of length 1. A location parameter. b should be bigger than a}
 }
 \value{
 A vectorised function. A uniform distribution function.
