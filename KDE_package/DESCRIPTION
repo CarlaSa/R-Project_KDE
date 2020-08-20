@@ -33,4 +33,6 @@ Imports:
     cubature,
     methods,
     stats,
-    rlang
+    rlang,
+    ggplot2,
+    MLmetrics

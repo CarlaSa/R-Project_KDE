@@ -69,8 +69,11 @@ rejection_sample <- function(n_obs,
                              n_iter = 10
                             ) {
     if(is.na(n_obs)) stop("n_obs is NA. Please set n_obs to positive number.")
-    stopifnot("n_obs must be a positive numeric vector length 1." = is.numeric(n_obs) & length(n_obs)==1)
-    stopifnot(is.function(f))
+    stopifnot("n_obs must be a positive numeric vector length 1." = is.numeric(n_obs) & length(n_obs)==1 & n_obs>0)
+    stopifnot("f must be a valid pdf function" = is.function(f) & abs(integrate(f, -Inf, Inf)$value - 1)<1e-3 & min(f(seq(-5, 5, length.out = 100)))>= 0)
+    stopifnot("helper not valid. Options are: helpers$normal, helpers$uniform" = is_helper(helper))
+    if(is.na(n_iter)) stop("n_iter is NA. Please set n_iter to positive number.")
+    stopifnot("n_iter must be a positive numeric vector length 1." = is.numeric(n_iter) & length(n_iter)==1 & n_iter>0)
     helper_density <- attr(helper, 'density')
     p_sapply(seq(n_obs), function(i) {
         while (TRUE) {

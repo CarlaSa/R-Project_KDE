@@ -10,7 +10,7 @@ pdfs_test <- list(
   cauchy_std = get_cauchy(),
   cauchy_rand = get_cauchy(x0 = runif(1, -10, 10), gamma = runif(1, 0.001, 10)),
   unif_std = get_uniform(),
-  unif_rand = get_uniform(a = runif(1, -1000, -1000) -> a, b = runif(1, a, 1000)),
+  unif_rand = get_uniform(a = runif(1, -1000, 0) , b = runif(1, 0, 1000)),
   normal_std = get_normal(),
   normal_rand = get_normal(mu =  runif(1, -100, 100), runif(1, 0.001, 100)),
   exp_std = get_exponential(),
@@ -22,7 +22,7 @@ pdfs_test <- list(
 for (namef in names(pdfs_test)){
   print(namef)
   f <- pdfs_test[[namef]]
-  test_that(paste0(namef, " integral of propability distribution should be 1"),
+  test_that(paste0(namef, " integral of probability distribution should be 1"),
             expect_lt(abs(1- integrate(f, upper = Inf, lower = -Inf)$value), tolerance))
   values = runif(100, -1000, 1000)
   rangef = range(f(values))
