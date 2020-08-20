@@ -73,14 +73,17 @@ compare <- function(x_points, real_functions, n=1000,  try_kernels=kernels$gauss
 ```
 
 ```{r}
-#x_points <- seq(from = -3, to = 3, length.out = 1e5)
-#plot(x_points, pdfs$Cauchy(x_points))
+
 
 ```
 
 ```{r}
-x_points <- seq(from = -3, to = 3, length.out = 1e5)
+x_points <- seq(from = -3, to = 3, length.out = 1e2)
 f <- pdfs$Cauchy
+data1 <- rejection_sample(1000, f)
+h_opt <- bandwidth_selection("PCO", data=data1, maxEval=1e3, set_up_cluster = FALSE)
+h_opt
+```
+```{r}
 res <- compare(x_points, f, methods=list("CV", "PCO"))
 res
-```
