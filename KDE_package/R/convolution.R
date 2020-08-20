@@ -8,7 +8,6 @@
 #' @return A function. The convolution product of f, g.
 convolution <- function(f, g, maxEval) {
     sapplify(function(x) {
-        #integrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf)$value
-                 cubature::cubintegrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxEval)$integral
+                 cubature::cubintegrate(function(u) f(u) * g(x-u), lower = -Inf, upper = Inf, method = "hcubature", maxEval=maxEval)$integral
     })
 }
