@@ -48,7 +48,7 @@ criterion_CV <- function(h, Kernel, data, maxEval){
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A vectorised single-parameter function. The Cross Validation bandwidth selection
 #' optimisation criterion.
-get_criterion_CV <- function(Kernel, data, maxEval = 1e6){
+get_criterion_CV <- function(Kernel, data, maxEval){
     force(Kernel)
     force(data)
     force(maxEval)

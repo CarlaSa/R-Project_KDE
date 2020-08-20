@@ -10,9 +10,8 @@
 #' @param data A double vector of the sample data to use.
 #' @param lower A double vector of length 1. The lowest bandwidth to test.
 #' @param upper A double vector of length 1. The greatest bandwidth to test.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param ... Optional arguments for the criterion function.
-#' @param set_up_cluster A logical vector of length 1. Whether parallelisation
-#'   should be activated if `setup_cluster` has not been run yet.
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @details Optional arguments and defaults for PCO: \cr \code{v = 1}, a
 #'   calibration constant for the variance term. \cr \cr Optional arguments and
@@ -28,10 +27,10 @@
 bandwidth_selection <- function(criterion_method,
                                 Kernel = kernels$gaussian,
                                 data,
+                                maxEval = 1e3,
                                 lower = 1e-3,
                                 upper = 1e0,
-                                ...,
-                                set_up_cluster = TRUE) {
+                                ...) {
   # check inputs
   bws_methods <- bandwidth_selection_criteria()
   stopifnot("criterion_method must be `GL`,`PCO` or `CV`" = criterion_method %in% names(bws_methods))
@@ -41,27 +40,20 @@ bandwidth_selection <- function(criterion_method,
   stopifnot("lower should be a positive number" = is.numeric(lower) & length(lower) == 1 & lower>0)
   stopifnot("upper should be a positive number" = is.numeric(upper) & length(upper) == 1 & upper>0)
   stopifnot("lower should be smaller than upper" = lower<upper)
-  
-  if (set_up_cluster && !exists('cluster')) {
-    n_cores <- setup_cluster()
-    message(
-      stringr::str_glue(
-        'A cluster of {n_cores} cores has been set up and will be used in the future. See `?KDE::setup_cluster` for details.'
-      )
-    )
-  }
+  stopifnot("maxEval should be a positive number" = is.numeric(maxEval) & length(maxEval) == 1 & maxEval > 0)
+
   criterion_getter <- bws_methods[[criterion_method]]
   if ('lower' %in% formalArgs(criterion_getter)) {
     if ('upper' %in% formalArgs(criterion_getter)) {
       criterion <-
-        criterion_getter(Kernel, data, lower = lower, upper = upper, ...)
+        criterion_getter(Kernel, data, maxEval, lower = lower, upper = upper, ...)
     }
     else {
-      criterion <- criterion_getter(Kernel, data, lower = lower, ...)
+      criterion <- criterion_getter(Kernel, data, maxEval, lower = lower, ...)
     }
   }
   else {
-    criterion <- criterion_getter(Kernel, data, ...)
+    criterion <- criterion_getter(Kernel, data, maxEval, ...)
   }
   optimise(criterion, lower = lower, upper = upper)$minimum
 }
