@@ -40,7 +40,6 @@ data <- rejection_sample(n_obs=1000, realFunction)
 plot(data)
 ```
 
-<<<<<<< HEAD
 ```{r}
 compare <- function(x_points, real_functions, n=1000,  try_kernels=kernels$gaussian, methods="CV", reps=5){
   if(!is.list(try_kernels)) try_kernels <- list(try_kernels)
@@ -86,5 +85,3 @@ h_opt
 ```{r}
 res <- compare(x_points, f, methods=list("CV", "PCO"))
 res
-=======
->>>>>>> ba324ad6c9de463acdf9ded6e7cdc7508c5fe91b
