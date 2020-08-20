@@ -56,7 +56,7 @@ helpers <- list(
 #' Generate observations from an unknown distribution with a known density
 #' function using the rejection sampling method.
 #'
-#' @param n_obs An integer vector of length 1. The number of observations.
+#' @param n_obs A positive integer vector of length 1. The number of observations.
 #' @param f A probability density function to simulate observations from.
 #' @param helper A helper (distribution) object.
 #' @param n_iter An integer vector of length 1. A calibrating constant. The
@@ -68,6 +68,9 @@ rejection_sample <- function(n_obs,
                              helper = helpers$normal,
                              n_iter = 10
                             ) {
+    if(is.na(n_obs)) stop("n_obs is NA. Please set n_obs to positive number.")
+    stopifnot("n_obs must be a positive numeric vector length 1." = is.numeric(n_obs) & length(n_obs)==1)
+    stopifnot(is.function(f))
     helper_density <- attr(helper, 'density')
     p_sapply(seq(n_obs), function(i) {
         while (TRUE) {

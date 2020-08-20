@@ -2,7 +2,7 @@
 #'
 #' Find the optimal value for the bandwidth h.
 #'
-#' @param criterion_method Keyword of the bandwidth selection algorithm to use. Implimented are: 
+#' @param criterion_method A string. Keyword of the bandwidth selection algorithm to use. Implemented are: 
 #' "CV" the Cross Validation method
 #' "GL" the Goldenshluger-Lepski method
 #' "PCO" the Penalised Comparison to Overfitting method
@@ -22,7 +22,8 @@ bandwidth_selection <- function(criterion_method,
                                 ...,
                                 set_up_cluster = TRUE) {
   bws_methods <- bandwidth_selection_criteria()
-  stopifnot("criterion_method must be GL, PCO or CV" = criterion_method %in% names(bws_methods))
+  stopifnot("criterion_method must be `GL`,`PCO` or `CV`" = criterion_method %in% names(bws_methods))
+  stopifnot("Kernel not valid" = is_Kernel(Kernel))
   if (set_up_cluster && !exists('cluster')) {
     n_cores <- setup_cluster()
     message(
