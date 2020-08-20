@@ -14,15 +14,27 @@ criterion_CV <- function(h, Kernel, data, maxEval){
   f <- get_kde(h = h, Kernel = Kernel, data = data)
   term1 <- L2norm_squared(f, maxEval)
   
+  ### alternative 1
   temp <- 0
   for (i in 1:n){
     for (j in 1:n){
       if (i != j) temp = temp + Kernel( (data[i] - data[j]) / h )
     }
   }
+  term2 <- 2/(n * (n-1) * h) * temp
   
+  ### alternative 2
+  # `%tempfun%` <- function(i,j){
+  #   is_equal <- i == j
+  #   (1- is_equal) * Kernel( (data[i] - data[j]) / h )
+  # }
+  # temp <- outer(
+  #   X = 1: n,
+  #   Y = 1: n,
+  #   FUN = `%tempfun%`
+  # )
+  # term2 <- 1/(n * (n-1) * h)  * sum(temp)
   
-  term2 <- 2/(n * (n-1) * h)  * sum(temp)
   return(term1- term2)
 }
 
