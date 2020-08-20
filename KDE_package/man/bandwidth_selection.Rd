@@ -10,7 +10,8 @@ bandwidth_selection(
   data,
   lower = 0.001,
   upper = 1,
-  ...
+  ...,
+  set_up_cluster = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ bandwidth_selection(
 \item{upper}{A double vector of length 1. The greatest bandwidth to test.}
 
 \item{...}{Optional arguments for the criterion function.}
+
+\item{set_up_cluster}{A logical vector of length 1. Whether parallelisation should be activated if `setup_cluster` has not been run yet.}
 }
 \value{
 A double vector of length 1. The optimal bandwidth.

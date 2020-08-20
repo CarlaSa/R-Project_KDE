@@ -6,7 +6,7 @@
 \usage{
 setup_cluster(
   n_cores = -1,
-  use_parallel = NULL,
+  use_parallel = TRUE,
   overwrite = NULL,
   type = "FORK"
 )
@@ -14,7 +14,7 @@ setup_cluster(
 \arguments{
 \item{n_cores}{A numeric vector of length 1. The number of cores to use for the cluster. When set to 0 or a negative value, a number of n_cores plus the number of cores totally available is used instead.}
 
-\item{use_parallel}{A logical vector of length 1 or NULL. This determines whether parallalisation should be used. If set to NULL (default), parallalisation is used if the `parallel` package is installed.}
+\item{use_parallel}{A logical vector of length 1 (TRUE or FALSE). This determines whether parallalisation should be used.}
 
 \item{overwrite}{A logical vector of length 1 or NULL. This determines whether the global cluster should be overwritten. If set to NULL (default), a warning is raised if the object is overwritten. If set to TRUE, any existing `cluster` will be overwritten silently. If set to FALSE, this method will fail throwing an error if a global `cluster` is already present.}
 

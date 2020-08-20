@@ -41,7 +41,6 @@ est_bias_PCO <- function(h, Kernel, data, maxEval, m) {
 #' @param Kernel A real function. The kernel.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param n_obs A double vector of length 1. The number of observations.
-#' @param v A double vector of length 1. A calibration constant.
 #' @return A double vector.
 est_variance_PCO <- function(h, Kernel, maxEval, n_obs) {
   L2norm_squared(Kernel, maxEval) / (n_obs * h)
@@ -76,7 +75,6 @@ est_risk_PCO <- function(h, Kernel, data, maxEval, m, v) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
-#' @export
 get_criterion_PCO <- function(Kernel, data, maxEval = 1e6, lower, v = 1) {
   force(Kernel)
   force(data)

@@ -11,24 +11,19 @@ sapplify <- function(f) {
 #' Set up the cluster for parallel computing.
 #'
 #' @param n_cores A numeric vector of length 1. The number of cores to use for the cluster. When set to 0 or a negative value, a number of n_cores plus the number of cores totally available is used instead.
-#' @param use_parallel A logical vector of length 1 or NULL. This determines whether parallalisation should be used. If set to NULL (default), parallalisation is used if the `parallel` package is installed.
+#' @param use_parallel A logical vector of length 1 (TRUE or FALSE). This determines whether parallalisation should be used.
 #' @param overwrite A logical vector of length 1 or NULL. This determines whether the global cluster should be overwritten. If set to NULL (default), a warning is raised if the object is overwritten. If set to TRUE, any existing `cluster` will be overwritten silently. If set to FALSE, this method will fail throwing an error if a global `cluster` is already present.
 #' @param type A character vector of length 1. The type of cluster to be used. See `?parallel::makeCluster` for details.
 #' @return An integer vector of length 1 or NULL. The actual number of cores used in the cluster. If not NULL, it will always be greater than 0.
 #' @export
-setup_cluster <- function(n_cores = -1, use_parallel = NULL, overwrite = NULL, type = "FORK") {
-    if(!'parallel' %in% installed.packages()) {
-        stopifnot("The 'parallel' package is not installed. Please install it or set use_parallel to NULL or FALSE" = use_parallel == FALSE || is.null(use_parallel))
-    }
-    else if(is.null(use_parallel))
-        use_parallel <- TRUE
+setup_cluster <- function(n_cores = -1, use_parallel = TRUE, overwrite = NULL, type = "FORK") {
     if(exists('cluster')) {
         if(is.null(overwrite))
             warning('A cluster already exists and will be overwritten.')
         else
             stopifnot('A cluster already exists.' = overwrite == TRUE)
     }
-    if(is.null(use_parallel)) {
+    if(use_parallel) {
         cores_available <- parallel::detectCores()
         if(is.null(n_cores))
             n_cores <- cores_available - 1

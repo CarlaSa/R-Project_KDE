@@ -9,7 +9,7 @@ get_criterion_GL(
   data,
   maxEval = 1e+06,
   bandwidths = NULL,
-  n_bandwidths = 100,
+  n_bandwidths = 20,
   c = 1,
   v = 2,
   lower = NULL,

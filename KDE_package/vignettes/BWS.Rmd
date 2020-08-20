@@ -22,25 +22,59 @@ knitr::opts_chunk$set(
 ```{r, include=FALSE}
 devtools::load_all(".")
 library(ggplot2)
+library(utils)
 ```
 
 ```{r setup}
-#library(KDE)
+library(KDE)
 ```
 
-Kernel Density Estimation (KDE) is a statistical tool to estimate the underlying probability density function given a finite set of data points. As parameters, the method takes a choice kernel and a bandwidth \code{h}. Both parameters affect the 'shape' of the final estimate, but the bandwidth has the greatest influence and a selection of methods have been developed to make the best choice of bandwidth given a dataset and a chosen kernel. Our package provides implementations of three such bandwidth selection methods:
+Kernel Density Estimation (KDE) is a statistical tool to estimate the underlying probability density function given a finite set of data points. As parameters, the method takes a choice kernel and a bandwidth \code{h}. Both parameters affect the 'shape' of the final estimate, but the bandwidth has the greatest influence and a selection of methods have been developed to make the best choice of bandwidth given a dataset and a chosen kernel. 
+
+Our package provides implementations of three such bandwidth selection methods:
 
 * Cross validation
 * Goldenschluger-Lepski
 * Penalized Comparison to Overfitting (PCO)
 
-## Basic usage
-`bandwidth_selection()` has the following arguments:
+The package also provides:
 
- * The first argument, `method` selects the bandwidth selection method you wish to use:
-    + `CV` for Cross Validation
-    + `GL` for Goldenschluger-Lepski
-    + `PCO` for Penalized Comparison to Overfitting
+* a rejection sampling algorithm to generate simulated data from a range of provided functions, with the option to input a user-generated function
+* a range of KDE kernels
+* an implementation of the Kernel Density Estimator given data, bandwidth and kernel
+
+Users are also invited to explore the package through the KDE Shiny application.
+
+## Basic usage
+
+### Generate a dataset with `rejection_sample()`
+The user is able to provide their own data, or use `rejection_sample()` to simulate sampling from a given distribution.
+`rejection_sample()` has the following essential arguments:
+
+* The first argument, `n_obs`, should be an integer giving the number of data points which should be generated.
+* The second argument, `f`, is a probability density function. Users can provide their own function, or make use of one of the provided `pdf` functions (see below).
+
+Further arguments are optional:
+
+* `helper`: a helper function for the rejection sampling algorithm. Choose from `helpers$normal` (default) or `helpers$uniform`.
+* `n_iter`: a calibration constant (default `10`). The algorithm will take an average of `n_iter` iterations to obtain a sample.
+
+#TODO Options for pdf distributions
+
+For example, we simulate 500 data points from a Cauchy distribution with location parameter `x0 = 0` and scale parameter `gamma = 0.3`:
+
+```{r}
+pdf <- get_cauchy(0, 0.3)
+data <- rejection_sample(500, pdf)
+```
+
+### Find optimal bandwidth with `bandwidth_selection()`
+`bandwidth_selection()` uses a chosen bandwidth selection method to find `h_opt`, an optimal bandwidth for use in Kernel Density Estimation. It takes the following arguments which are independent of method choice:
+
+ * The first argument, `method` is a string naming one of three bandwidth selection methods:
+    + `'CV'` for Cross-validation
+    + `'PCO'` for Penalized Comparison to Overfitting
+    + `'GL'` for Goldenschluger-Lepski
  * For the second argument, a `Kernel` should be chosen from the following list:
     + `kernels$gaussian`
     + `kernels$rectangular`
@@ -48,8 +82,8 @@ Kernel Density Estimation (KDE) is a statistical tool to estimate the underlying
     + `kernels$epanechnikov` or alternatively `kernel$parabolic`
     + `kernels$biweight`
     + `kernels$silverman`
-
-
+    
+    
 ```{r, echo=FALSE}
 ggplot(data.frame(x=c(-3, 3)), aes(x=x)) + 
     geom_path(aes(colour="red"), stat="function", fun=kernels$gaussian)+
@@ -62,5 +96,53 @@ ggplot(data.frame(x=c(-3, 3)), aes(x=x)) +
                           labels = c("Gaussian", "Rectangular", "Triangular", "Epanechnikov", "Biweight", "Silverman"),
                           breaks = c("red", "blue", "green", "yellow", "orange", "black")) 
 ```
+
+  * `data` is the dataset generated with `rejection_sample()` or otherwise
+  * `maxEval` is the maximum number of function evaluations which `cubature::cubintegrate` will use to find an integral. Particularly for the integral-heavy Goldenschluger-Lepski method, smaller values are recommended to reduce computation time.
+  * `lower` (default `lower = 1e-3`) is a double value which gives the lower bound for the bandwidth search interval i.e. the smallest possible bandwidth
+  * Similarly, `upper` (default `upper = 1e0`) is a double value giving an upper bound for the bandwidth search interval
+  
+  Further method-dependent parameters for the PCO and Goldenschluger-Lepski methods are optional:
+  
+#### PCO
+
+  * A calibration constant `v` for the variance term (default `v = 1`) 
+
+#### Goldenschluger-Lepski
+  
+  * A vector of `bandwidths` to test. Default `bandwidths = NULL`. 
+  * If `bandwidths = NULL`, a uniform sequence of bandwidths is generated within the range between `lower` and `upper`. Parameter `n_bandwidths` gives the number of bandwidths in this sequence.
+  * A calibration constant `c` for the the bias term (default `c = 1`)
+  * A calibration constant `v` for the variance term (default `v = 2`)
+  
+  For the above calibration constants, it is recommended to use a ratio `v = 2c`. A minimum admissible value of `c = 1` is recommended, although this value has only been proven asymptotically (Lacour, C. and Massart, P., 2016. Minimal penalty for goldenshluger–lepski method).
+
+We demonstrate using the Gaussian kernel and PCO bandwidth selection method:
+
+```{r}
+setup_cluster(use_parallel = FALSE)
+kernel <- kernels$gaussian
+t <- Sys.time()
+Rprof()
+h_opt <- bandwidth_selection('PCO', kernel, data, maxEval = 1e3)
+Rprof(NULL)
+Sys.time()-t
+summaryRprof()
+
+h_opt
+```
+```{r}
+KDE <- get_kde(h_opt, kernel, data)
+
+x_vals <- seq(from = -3, to = 3, length.out = 1e5)
+
+plot(x_vals, pdf(x_vals), col = 1, lwd = 1, type = 'l')#, xlim=c(-4,4), ylim=c(0,0.45))
+lines(x_vals, KDE(x_vals), col=2, lwd=2)
+legend('topleft',
+       c('true function', 'KDE'),
+       lwd = 1:2,
+       col = 1:2)
+```
+
 
 

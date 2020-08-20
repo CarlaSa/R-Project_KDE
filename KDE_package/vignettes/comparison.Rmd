@@ -1,4 +1,4 @@
-2---
+---
 title: "Comparison of Bandwidth Selection Methods"
 author: "Charlotte Boys, Leon Patzig, Carla Sagebiel"
 description: >
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include=FALSE}
-#devtools::load_all(".")
+devtools::load_all(".")
 #devtools::install("KDE_package")
 library(ggplot2)
 ```
