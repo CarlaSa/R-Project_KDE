@@ -9,7 +9,7 @@ L2norm_squared <- function(f, maxEval) {
     if(is_Kernel(f))
         return(attr(f, 'L2norm_squared'))
     #integrate(function(u) f(u)^2, lower = -Inf, upper = Inf)$value
-    cubature::cubintegrate(function(u) f(u)^2, lower = -Inf, upper = Inf, method = "pcubature", maxEval=maxEval)$integral
+    cubature::cubintegrate(function(u) f(u)^2, lower = -Inf, upper = Inf, method = "hcubature", maxEval=maxEval)$integral
 }
 
 #' Calculate L2-norm of a real function.
