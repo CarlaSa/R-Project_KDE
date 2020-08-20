@@ -3,7 +3,6 @@
 #' @param func A function. The kernel function.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A Kernel object.
-#' @export
 Kernel <- function(func, maxEval = 1e6) {
     stopifnot("func must be a function"  = is.function(func))
     stopifnot("maxEval must have positive numerical value" = is.numeric(maxEval) & maxEval>0)
@@ -25,7 +24,6 @@ Kernel <- function(func, maxEval = 1e6) {
 #' This is only needed when check_values is set to TRUE.
 #' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @return A logical.
-#' @export
 is_Kernel <- function(object, check_values = FALSE, tolerance_rel = 1e-12, maxEval = 1e6) {
     class(object) == 'Kernel' &&
         is.function(object) &&

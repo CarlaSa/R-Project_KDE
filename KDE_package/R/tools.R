@@ -15,7 +15,6 @@ sapplify <- function(f) {
 #' @param overwrite A logical vector of length 1 or NULL. This determines whether the global cluster should be overwritten. If set to NULL (default), a warning is raised if the object is overwritten. If set to TRUE, any existing `cluster` will be overwritten silently. If set to FALSE, this method will fail throwing an error if a global `cluster` is already present.
 #' @param type A character vector of length 1. The type of cluster to be used. See `?parallel::makeCluster` for details.
 #' @return An integer vector of length 1 or NULL. The actual number of cores used in the cluster. If not NULL, it will always be greater than 0.
-#' @export
 setup_cluster <- function(n_cores = -1, use_parallel = TRUE, overwrite = NULL, type = "FORK") {
     if(exists('cluster')) {
         if(is.null(overwrite))

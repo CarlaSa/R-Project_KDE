@@ -27,8 +27,11 @@ kde <- function(x, h, Kernel, data) {
 #' @return A double vector of length 1.
 #' @export
 get_kde <- function(h, Kernel, data) {
+    stopifnot("h needs to be a positive vector of length 1." = is.numeric(h) & (h>0) & length(h)==1)
+    stopifnot("data should be numeric" = is.numeric(data))
+    stopifnot("data should be vector" = is.vector(data))
     if(is.character(Kernel)) {
-        stopifnot('Kernel not fount in `kernels`. Provide a valid name or a function or Kernel object instead.' = Kernel %in% names(kernels))
+        stopifnot('Kernel not found in `kernels`. Provide a valid name or a function or Kernel object instead.' = Kernel %in% names(kernels))
         Kernel <- kernels[Kernel]
     }
     stopifnot('Kernel needs to be a Kernel object, a function or the name of a Kernel in `kernels`.' = is_Kernel(Kernel) || is.function(Kernel))

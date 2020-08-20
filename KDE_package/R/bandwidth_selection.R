@@ -27,8 +27,9 @@ bandwidth_selection <- function(criterion_method,
   stopifnot("Kernel not valid" = is_Kernel(Kernel))
   stopifnot("data should be numeric" = is.numeric(data))
   stopifnot("data should be vector" = is.vector(data))
-  stopifnot("lower should be a number" = is.numeric(lower) & length(lower) == 1)
-  stopifnot("upper should be a number" = is.numeric(upper) & length(upper) == 1)
+  stopifnot("lower should be a positive number" = is.numeric(lower) & length(lower) == 1 & lower>0)
+  stopifnot("upper should be a positive number" = is.numeric(upper) & length(upper) == 1 & upper>0)
+  stopifnot("lower should be smaller than upper" = lower<upper)
   
   if (set_up_cluster && !exists('cluster')) {
     n_cores <- setup_cluster()
