@@ -30,6 +30,8 @@ library(KDE)
 
 We run a simulation study to compare the three bandwidth selection methods. I'll use `MLmetrics::MSE(y_pred, y_true)` on the vectors. I'll start with just the Gaussian kernel, then try it for different functions (ask Carla for her functions). I'll find not just the MSE, but also the computation time either using `system.time()`, `Sys.time()` or `utils::Rprof()`.
 
+Um das Resultat nicht von den zufällig gezogenen Daten abhängig zu machen, müssen wir diesen Vorgangmehrere Male (hier meist 400-mal) wiederholen. Damit werden wir Bias und Varianz visualisieren und den MISE annähern, um daraus weitere Erkenntnisse abzuleiten
+
 First, let us generate our set of finite data points from a mixed Gaussian distribution:
 ```{r}
 realFunction <- pdfs$Mix2Gauss
@@ -40,3 +42,45 @@ data <- rejection_sample(n_obs=1000, realFunction)
 plot(data)
 ```
 
+```{r}
+compare <- function(x_points, real_functions, n=1000,  try_kernels=kernels$gaussian, methods="CV", reps=5){
+  if(!is.list(try_kernels)) try_kernels <- list(try_kernels)
+  if(!is.list(real_functions)) real_functions <- list(real_functions)
+  if(!is.list(methods)) methods <- list(methods)
+  m <- length(real_functions)*length(try_kernels)*length(methods)
+  res <- array(NA, dim=c(length(x_points), reps, m))
+  cnt <- 1
+  # compare only in the region [0,1]
+  #x <- seq(0,1, len=n)
+  # iterate through all vectors of options
+  for (f in real_functions){
+    for (k in try_kernels){
+      for (m in methods){
+        cat(m, "\n")
+        res[,, cnt] <- replicate(reps, {
+          data <- rejection_sample(n,f)
+          h <- bandwidth_selection(m, k, data, maxEval=1e3, set_up_cluster = F)
+          cat("h = ", h, "cnt = ", cnt, "\n")
+          KDE <- get_kde(h, k, data)
+          KDE(x_points)
+        })
+        cnt <- cnt + 1
+      }
+    }
+  }
+  res
+}
+```
+
+```{r}
+#x_points <- seq(from = -3, to = 3, length.out = 1e5)
+#plot(x_points, pdfs$Cauchy(x_points))
+
+```
+
+```{r}
+x_points <- seq(from = -3, to = 3, length.out = 1e5)
+f <- pdfs$Cauchy
+res <- compare(x_points, f, methods=list("CV", "PCO"))
+res
+```
