@@ -13,7 +13,7 @@ ui <- fluidPage(
     fluidRow(
         column(3,
                h4('true density function'),
-                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories), selected = 'normal'),
+                selectInput('pdf_factory', 'Probability distribution', names(pdf_factories), selected = 'Normal'),
                 'Your function expression:',
                 textInput('f', 'f <- function(x)', value = '1/(1 * sqrt(2 * pi)) * exp(-1/2 * ((x - 0)/1)^2)')
                ),
@@ -25,7 +25,7 @@ ui <- fluidPage(
                                      numericInput('n_iter', 'average number of iterations per sample',
                                                   value = 10
                                                  ),
-                                     selectInput('helper', 'helper distribution', names(helpers), selected = 'normal')
+                                     selectInput('helper', 'helper distribution', names(helpers), selected = 'Normal')
                                     ),
                             tabPanel('read/save data',
                                      fileInput("rds_file", "Choose RDS File",
@@ -128,7 +128,7 @@ server <- function(input, output, session) {
     
     observeEvent(input$pdf_factory, {
         pdf_factory <- pdf_factories[[input$pdf_factory]]
-        if(identical(pdf_factory, pdf_factories$custom))
+        if(identical(pdf_factory, pdf_factories$Custom))
             f_text <- formals(pdf_factory)[[1]]
         else {
             pdf <- pdf_factory()
