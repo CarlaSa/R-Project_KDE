@@ -25,7 +25,7 @@ ui <- fluidPage(
                                      numericInput('n_iter', 'average number of iterations per sample',
                                                   value = 10
                                                  ),
-                                     selectInput('helper', 'helper distribution', names(helpers), selected = 'Normal')
+                                     selectInput('helper', 'helper distribution', names(helpers), selected = 'normal')
                                     ),
                             tabPanel('read/save data',
                                      fileInput("rds_file", "Choose RDS File",
@@ -147,7 +147,7 @@ server <- function(input, output, session) {
     # compute bandwidth
     observeEvent(input$run_bws, {
         withProgress(message = 'computing the bandwidth', value = 0.1, {
-            computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3, set_up_cluster = FALSE)
+            computed_bandwidth <<- bandwidth_selection(input$bandwidth_selection_method, kernels[[input$kernel]], .get_data(), maxEval = 1e3)
             incProgress(0.85)
             output$h_bws <- renderText(computed_bandwidth)
             incProgress(0.05)
