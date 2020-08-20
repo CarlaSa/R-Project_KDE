@@ -47,8 +47,8 @@ is_helper <- function(object) {
 #'
 #' @export
 helpers <- list(
-     uniform = helper(function() runif(1, -1, 1), kernels$rectangular),
-     normal = helper(function() rnorm(1, 0, 1), kernels$gaussian)
+     uniform = helper(function() runif(1, -10, 10), get_uniform(-10, 10)),
+     normal = helper(function() rnorm(1, 0, 1), get_normal(0, 1))
 )
 
 #' Rejection sampling.
