@@ -44,7 +44,7 @@ is_helper <- function(object) {
 }
 
 #' Helper distributions for rejection sampling.
-#'
+#' @usage Options: \code{helpers$uniform}, \code{helpers$normal}
 #' @export
 helpers <- list(
      uniform = helper(function() runif(1, -1, 1), kernels$rectangular),
