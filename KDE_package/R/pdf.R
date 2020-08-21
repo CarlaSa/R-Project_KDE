@@ -87,18 +87,12 @@ get_custom <- function(str = 'abs(x)/4 * (abs(x) <= 2)') {
 }
 
 #' Some preset probability density functions.
-#' @usage Options: \code{pdfs$Cauchy}, \code{pdfs$Uniform}, \code{pdfs$Expo}, \code{pdfs$Mix2Gauss}
+#' @usage Options: \code{pdfs$Cauchy}, \code{pdfs$Uniform}, \code{pdfs$Expo}
 #' @export
 pdfs <- list(
     Cauchy = get_cauchy(0, 0.5),
     Uniform = get_uniform(0, 1),
-    Expo = get_exponential(1),
-    Mix2Gauss = {
-        .norm1 <- get_normal(0, 1)
-        .norm2 <- get_normal(3, 9)
-        function(x)
-            (.norm1(x) + .norm2(x)) / 2
-    }
+    Expo = get_exponential(1)
 )
 
 #' All probability density functions available in one list.
