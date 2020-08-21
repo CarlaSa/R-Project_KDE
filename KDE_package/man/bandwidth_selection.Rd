@@ -8,10 +8,10 @@ bandwidth_selection(
   criterion_method,
   Kernel = kernels$gaussian,
   data,
+  maxEval = 1000,
   lower = 0.001,
   upper = 1,
-  ...,
-  set_up_cluster = TRUE
+  ...
 )
 }
 \arguments{
@@ -24,14 +24,13 @@ Overfitting method}
 
 \item{data}{A double vector of the sample data to use.}
 
+\item{maxEval}{A double vector of length 1. The maximum number of function evaluations when integrating.}
+
 \item{lower}{A double vector of length 1. The lowest bandwidth to test.}
 
 \item{upper}{A double vector of length 1. The greatest bandwidth to test.}
 
 \item{...}{Optional arguments for the criterion function.}
-
-\item{set_up_cluster}{A logical vector of length 1. Whether parallelisation
-should be activated if `setup_cluster` has not been run yet.}
 }
 \value{
 A double vector of length 1. The optimal bandwidth.
