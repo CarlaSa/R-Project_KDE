@@ -8,8 +8,9 @@ vignette: >
   %\VignetteIndexEntry{Comparison of Bandwidth Selection Methods}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -30,35 +31,52 @@ library(KDE)
 
 We follow the RKurs Vorlesung 15 and run a simulation study to compare our bandwidth simulation methods for various functions and kernels. 
 
-## Goldenschluger-Lepski method
+## Computational time
 
-Sadly, we note that the current implementation of the Goldenschluger-Lepski method is very slow, even for a small `maxEval` and minimal number of bandwidths for `h_prime` tested:
+Sadly, we note that the current implementation of the Goldenschluger-Lepski method is very slow across most kernels and functions, even for a small `maxEval` and minimal number of bandwidths for `h_prime` tested:
 
 ```{r}
-pdf <- pdfs$Mix2Gauss
-data <- rejection_sample(100, pdf)
+pdf <- pdfs$Expo
+data <- rejection_sample(1000, pdf)
 kernel <- kernels$gaussian
 system.time(
-  h_opt <- bandwidth_selection('GL', kernel, data, maxEval = 100, n_bandwidths=3)
+  h_opt_GL <- bandwidth_selection('GL', kernel, data, maxEval = 100, n_bandwidths=3)
   )
-h_opt
+h_opt_GL
 ```
 
 This is due to multiple nested `sapply` loops, each performing integration. Given more time, this implementation would need to be vectorised, and integrate functions replaced with `Rcpp` implementations. 
 
-The small values of `maxEval`, `n_obs` and `n_bandwidths` lead to an unimpressive result:
+Compare the speed to the PCO method with a higher value of maxEval:
+```{r}
+system.time(
+  h_opt_PCO <- bandwidth_selection('PCO', kernel, data, maxEval = 1e3)
+  )
+h_opt_PCO
+```
+The Cross-validation method, with a higher value of maxEval (and so hopefully more accurate integrals) also becomes slow with some function and kernel combinations:
+```{r}
+system.time(
+  h_opt_CV <- bandwidth_selection('CV', kernel, data, maxEval = 1e3)
+  )
+h_opt_CV
+```
   
 ```{r}
-KDE <- get_kde(h_opt, kernel, data)
+KDE_GL <- get_kde(h_opt_GL, kernel, data)
+KDE_PCO <- get_kde(h_opt_PCO, kernel, data)
+KDE_CV <- get_kde(h_opt_CV, kernel, data)
 ggplot(data.frame(x=c(-3, 3)), aes(x=x)) + 
-    geom_path(aes(colour="red"), stat="function", fun=KDE)+
+    geom_path(aes(colour="red"), stat="function", fun=KDE_GL)+
+    geom_path(aes(colour="blue"), stat="function", fun=KDE_PCO) +
+    geom_path(aes(colour="green"), stat="function", fun=KDE_CV) +
     geom_path(aes(colour="black"), stat="function", fun=pdf) +
     scale_colour_identity("Function", guide="legend", 
-                          labels = c("KDE", "True pdf"),
-                          breaks = c("red", "black")) 
+                          labels = c("KDE_GL", "KDE_PCO", "KDE_CV", "True pdf"),
+                          breaks = c("red", "blue", "green", "black")) 
 ```
 
-For this reason, we omit the Goldenschluger-Lepski method as it currently stands from the current simulation study. However, it could be easily included if the processing time became tractable.
+We note without showing results here that our implementation of GL is uniformly slow across many function and kernel choices. The processing time for the CV method, on the other hand, approaches that of PCO for some choices of kernel and function. For reasons of computational time, we chose to omit the Goldenschluger-Lepski method from the current simulation study. However, it could be easily included if the processing time became tractable.
 
 ## Visual comparison
 
@@ -245,20 +263,31 @@ mise1 <- readRDS("gaussian_CV_PCO_cauchy_100_MISE.RDS")
 mise2 <- readRDS("epanechnikov_CV_PCO_cauchy_normal_100_MISE.RDS")
 mise3 <- readRDS("gaussian_CV_PCO_normal_100_MISE.RDS")
 data_mise <- bind_rows(mise1, mise2, mise3)
+data_mise
 ```
+
+```{r}
+data_mise
+```
+We can see that for the Gaussian kernel, Cross-validation tends to be more accurate than PCO. However, for the Epanechnikov kernel, the difference is barely noticeable.
+
 
 We can make our results more readable by looking specifically at the effect of the chosen kernel on the MISE of the two methods:
 ```{r}
 data_mise %>%
   select(method, kernel, mise) %>%
-  pivot_wider(names_from=kernel, values_from=mise) ->
-  kernels_mise
+  pivot_wider(names_from=kernel, values_from=mise, values_fn=mean) -> kernels_mise
+kernels_mise
 ```
+As expected, we see that on average across the real functions, the Kernel doesn't have much of an effect.
 
-...and the effect of the real function on the MISE of the two methods:
+Let us look more closely at the effect of the real function on the MISE of the two methods:
 ```{r}
 data_mise %>%
   select(method, func, mise) %>%
-  pivot_wider(names_from = func, values_from=mise) ->
-  functions_mise
+  pivot_wider(names_from = func, values_from=mise, values_fn=mean) -> functions_mise
+functions_mise
 ```
+We see that both methods work better for estimating the Gaussian distribution than the Cauchy distribution. In both cases, the Cross-validation method is slightly more accurate. 
+
+Unfortunately we were only able to examine a limited set of functions and kernels due to computational time restrictions. Nevertheless, through the simulation study we have found that the simplest of all bandwidth-selection methods, Cross-validation, is in fact overall the most accurate for the functions tested, although the only slightly. More simulations are needed to assess the comparative speed of the two methods across multiple functions and kernels. 

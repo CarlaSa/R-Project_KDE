@@ -56,7 +56,6 @@ The user is able to provide their own data, or use `rejection_sample()` to simul
   + `pdfs$Cauchy`
   + `pdfs$Uniform`
   + `pdfs$Expo`
-  + `pdfs$Mix2Gauss`
 
 Further arguments are optional:
 
