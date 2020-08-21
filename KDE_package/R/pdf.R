@@ -72,9 +72,8 @@ get_laplace <- function(mu = 0, b = 1) {
     stopifnot("b should be a double vector of length 1" = is.double(b) & length(b) == 1)
     stopifnot("parameters should not be NAs" = !(is.na(mu) | is.na(b)))
     stopifnot("b should be greater than 0" = b > 0)
-    function(x) {
+    function(x)
         1/(2*b) * exp(-abs(x - mu)/b)
-    }
 }
 
 #' Get a distribution function from a string containing a custom expression.
@@ -87,7 +86,8 @@ get_custom <- function(str = 'abs(x)/4 * (abs(x) <= 2)') {
     function(x) eval(rlang::parse_expr(str))
 }
 
-#' Some probability density functions.
+#' Some preset probability density functions.
+#' @usage Options: \code{pdfs$Cauchy}, \code{pdfs$Uniform}, \code{pdfs$Expo}, \code{pdfs$Mix2Gauss}
 #' @export
 pdfs <- list(
     Cauchy = get_cauchy(0, 0.5),
@@ -102,12 +102,19 @@ pdfs <- list(
 )
 
 #' All probability density functions available in one list.
+#' @details Users can use these function factories to set their own parameters.\cr
+#' Options and defaults are as follows:  \cr
+#' \code{pdf_factories$Cauchy(x0 = 0, gamma = 0.5)} \cr
+#' \code{pdf_factories$Uniform(a = -1, b = 1)} \cr
+#' \code{pdf_factories$Expo(lambda = 1)} \cr
+#' \code{pdf_factories$Laplace(mu = 0, b = 1)} \cr
+#' \code{pdf_factories$Custom(str = 'abs(x)/4 * (abs(x) <= 2)')} 
 #' @export
 pdf_factories <- list(
     Cauchy = get_cauchy,
-    uniform = get_uniform,
-    normal = get_normal,
-    exponential = get_exponential,
+    Uniform = get_uniform,
+    Normal = get_normal,
+    Expo = get_exponential,
     Laplace = get_laplace,
-    custom = get_custom
+    Custom = get_custom
 )

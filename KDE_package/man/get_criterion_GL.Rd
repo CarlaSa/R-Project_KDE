@@ -7,7 +7,7 @@
 get_criterion_GL(
   Kernel,
   data,
-  maxEval = 1e+06,
+  maxEval,
   bandwidths = NULL,
   n_bandwidths = 20,
   c = 1,

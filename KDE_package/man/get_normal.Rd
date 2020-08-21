@@ -9,7 +9,7 @@ get_normal(mu = 0, sigma = 1)
 \arguments{
 \item{mu}{A double vector of length 1. The mean.}
 
-\item{sigma}{A double vector of length 1. The standard deviation.}
+\item{sigma}{A double vector of length 1. The standard deviation. Should not be 0}
 }
 \value{
 A vectorised function. A normal distribution function.

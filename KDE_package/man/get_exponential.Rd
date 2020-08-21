@@ -7,7 +7,7 @@
 get_exponential(lambda = 1)
 }
 \arguments{
-\item{lambda}{A double vector of length 1.
+\item{lambda}{A double vector of length 1. It should be bigger than 0
 The rate (inverse scale) parameter.}
 }
 \value{

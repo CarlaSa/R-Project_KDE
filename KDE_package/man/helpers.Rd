@@ -8,7 +8,7 @@
 An object of class \code{list} of length 2.
 }
 \usage{
-helpers
+Options: \code{helpers$uniform}, \code{helpers$normal}
 }
 \description{
 Helper distributions for rejection sampling.

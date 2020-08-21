@@ -3,14 +3,14 @@
 \docType{data}
 \name{pdfs}
 \alias{pdfs}
-\title{Some probability density functions.}
+\title{Some preset probability density functions.}
 \format{
 An object of class \code{list} of length 4.
 }
 \usage{
-pdfs
+Options: \code{pdfs$Cauchy}, \code{pdfs$Uniform}, \code{pdfs$Expo}, \code{pdfs$Mix2Gauss}
 }
 \description{
-Some probability density functions.
+Some preset probability density functions.
 }
 \keyword{datasets}

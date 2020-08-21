@@ -9,7 +9,7 @@ get_cauchy(x0 = 0, gamma = 0.5)
 \arguments{
 \item{x0}{A double vector of length 1. The location parameter.}
 
-\item{gamma}{A double vector of length 1. The scale parameter.}
+\item{gamma}{A double vector of length 1. The scale parameter. It should be greater than 0}
 }
 \value{
 A vectorised function. A Cauchy distribution function.

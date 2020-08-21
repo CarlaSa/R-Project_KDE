@@ -75,7 +75,7 @@ est_risk_PCO <- function(h, Kernel, data, maxEval, m, v) {
 #' @param v A double vector of length 1. A calibration constant.
 #' @return A vectorised single-parameter function. The PCO bandwidth selection
 #' optimisation criterion.
-get_criterion_PCO <- function(Kernel, data, maxEval = 1e6, lower, v = 1) {
+get_criterion_PCO <- function(Kernel, data, maxEval, lower, v = 1) {
   force(Kernel)
   force(data)
   force(maxEval)
