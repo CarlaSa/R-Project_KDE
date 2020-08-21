@@ -4,7 +4,7 @@
 \name{KDE-package}
 \alias{KDE}
 \alias{KDE-package}
-\title{KDE: Tools for Kernel Density Estimation including Bandwidth Selection Methods.}
+\title{KDE: Tools for Kernel Density Estimation including Bandwidth Selection Methods}
 \description{
 A package containing tools for Kernel Density Estimation, including rejection sampling the to simulate data from density functions, methods for bandwidth selection, and implementation of kernels.
 }

@@ -2,6 +2,7 @@
 
 export(Kernel)
 export(bandwidth_selection)
+export(bandwidth_selection_criteria)
 export(get_cauchy)
 export(get_custom)
 export(get_exponential)

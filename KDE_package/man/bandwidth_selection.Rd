@@ -6,7 +6,7 @@
 \usage{
 bandwidth_selection(
   criterion_method,
-  Kernel,
+  Kernel = kernels$gaussian,
   data,
   lower = 0.001,
   upper = 1,
@@ -15,7 +15,7 @@ bandwidth_selection(
 )
 }
 \arguments{
-\item{criterion_method}{Keyword of the bandwidth selection algorithm to use. Implimented are: 
+\item{criterion_method}{A string. Keyword of the bandwidth selection algorithm to use. Implemented are: 
 "CV" the Cross Validation method
 "GL" the Goldenshluger-Lepski method
 "PCO" the Penalised Comparison to Overfitting method}
