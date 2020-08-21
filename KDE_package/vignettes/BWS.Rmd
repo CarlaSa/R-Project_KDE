@@ -66,7 +66,7 @@ Further arguments are optional:
 For example, we simulate 500 data points from a Cauchy distribution with location parameter `x0 = 0` and scale parameter `gamma = 0.3`:
 
 ```{r}
-pdf <- get_cauchy(0, 0.3)
+pdf <- pdfs$Cauchy
 data <- rejection_sample(1000, pdf)
 ```
 
@@ -153,8 +153,25 @@ ggplot(data.frame(x=c(-3, 3)), aes(x=x)) +
 
 ## Advanced Options
 
+### Use parallel `sapply()` with `setup_cluster()`
+
+A weakness of our package is the heavy use of `sapply()`. To speed up the processing time, we have written a parallelised version `p_sapply()`. To make use of `p_sapply()`, we provide the user function `setup_cluster()`.
+This function is called once to enable parallelization during the runtime, and will create a single cluster object for parallel computing in the global environment.
+The arguments are as follows:
+
+* `n_cores`: The user can specify the number of cores to be used in parallel. A default value is set to the total number of cores minus one. 
+* `use_parallel`: set to `True` to enable parallel processing. Call the function again with `False` to disable. Default `True`.
+* `overwrite`: If overwrite is left at the default value, a warning will be thrown if the cluster object already exists. If set to `True`, no warning will be shown in this case. If set to `False`, then the function gives an error if a cluster object already exists.
+* `type`: a parameter passed to the parallel package. Operating system specific. See `parallel::makeCluster` for details.
+
 To enable parallelization, call:
 
 ```{r eval=FALSE}
 setup_cluster(use_parallel = TRUE)
+```
+
+To disable  parallelization, call:
+
+```{r eval=FALSE}
+setup_cluster(use_parallel = FALSE)
 ```
