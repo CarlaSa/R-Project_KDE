@@ -1,0 +1,52 @@
+Kernel                  Constructor for a Kernel object.
+L2norm                  Calculate L2-norm of a real function.
+L2norm_squared          Calculate L2-norm squared of a real function.
+bandwidth_selection     Bandwidth selection using optimise.
+bandwidth_selection_criteria
+                        Getters for the bandwidth selection criteria.
+convolution             Calculate the convolution product of two real
+                        functions.
+criterion_CV            Criterion Cross Validation We want to choose h
+                        in such a way, that criterion is minimized
+est_bias_GL             Estimator for the Bias Term.
+est_bias_PCO            Estimator for the Bias Term
+est_risk_GL             Estimator for the Risk.
+est_risk_PCO            Estimator for the Risk.
+est_variance_GL         Estimator for the Variance Term.
+est_variance_PCO        Estimator for the Variance Term.
+get_cauchy              Get a Cauchy distribution function.
+get_criterion_CV        Optimisation criterion for bandwidth selection
+                        using the Cross Validation method.
+get_criterion_GL        Optimisation criterion for bandwidth selection
+                        using the Goldenshluger-Lepski method.
+get_criterion_PCO       Optimisation criterion for bandwidth selection
+                        using PCO.
+get_custom              Get a distribution function from a string
+                        containing a custom expression.
+get_double_kernel_estimator
+                        Double kernel estimator.
+get_exponential         Get an exponential distribution function.
+get_kde                 Get a fix KDE.
+get_laplace             Get a Laplace distribution function.
+get_normal              Get a normal distribution function.
+get_parallel_cluster    Get the cluster for parallel computing.
+get_uniform             Get a uniform distribution function.
+helper                  Constructor of a helper (distribution) object
+                        for rejection sampling.
+helpers                 Helper distributions for rejection sampling.
+is_Kernel               Validation function for Kernel objects.
+is_helper               Validation function for helper (distribution)
+                        objects for rejection sampling.
+kde                     Kernel density estimator.
+kernels                 Some Kernels.
+p_sapply                Use a parallelised version of sapply, if
+                        available.
+pdf_factories           All probability density functions available in
+                        one list.
+pdfs                    Some preset probability density functions.
+rejection_sample        Rejection sampling.
+runExample              Run the shiny app.
+sapplify                Vectorise a single-parameter function using
+                        sapply.
+scaled_kernel           Scaled kernel.
+setup_cluster           Set up the cluster for parallel computing.

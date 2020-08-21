@@ -1,0 +1,34 @@
+Package: KDE
+Title: Tools for Kernel Density Estimation including Bandwidth
+        Selection Methods
+Description: A package containing tools for Kernel Density Estimation, including rejection sampling the to simulate data from density functions, methods for bandwidth selection, and implementation of kernels.
+Version: 0.0
+Encoding: UTF-8
+Authors@R: 
+    c(person( given = "Charlotte",
+              family = "Boys", 
+              email = "", 
+              role = c("aut")),
+      person( given = "Leon",
+              family = "Patzig", 
+              email = "",
+              role = c("aut")),
+      person( given = "Carla",
+              family = "Sagebiel", 
+              email = "carlachristin@googlemail.com", 
+              role = c("aut", "cre"))
+            )
+Suggests: knitr, rmarkdown, testthat
+VignetteBuilder: knitr, stringr, shiny
+RoxygenNote: 7.1.1
+License: usethis::use_mit_license(name = "Carla Sagebiel")
+Imports: stringr, shiny, cubature, methods, stats, rlang, ggplot2,
+        MLmetrics, tidyverse
+NeedsCompilation: no
+Packaged: 2020-08-21 07:45:51 UTC; charlottemayboys
+Author: Charlotte Boys [aut],
+  Leon Patzig [aut],
+  Carla Sagebiel [aut, cre]
+Maintainer: Carla Sagebiel <carlachristin@googlemail.com>
+Depends: R (>= 3.5.0)
+Built: R 4.0.2; ; 2020-08-21 07:46:01 UTC; unix
