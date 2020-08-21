@@ -35,4 +35,5 @@ Imports:
     stats,
     rlang,
     ggplot2,
-    MLmetrics
+    MLmetrics,
+    tidyverse
