@@ -4,7 +4,7 @@
 \alias{get_criterion_PCO}
 \title{Optimisation criterion for bandwidth selection using PCO.}
 \usage{
-get_criterion_PCO(Kernel, data, maxEval = 1e+06, lower, v = 1)
+get_criterion_PCO(Kernel, data, maxEval, lower, v = 1)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}

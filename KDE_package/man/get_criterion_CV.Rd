@@ -4,7 +4,7 @@
 \alias{get_criterion_CV}
 \title{Optimisation criterion for bandwidth selection using the Cross Validation method.}
 \usage{
-get_criterion_CV(Kernel, data, maxEval = 1e+06)
+get_criterion_CV(Kernel, data, maxEval)
 }
 \arguments{
 \item{Kernel}{A real function. The kernel.}
