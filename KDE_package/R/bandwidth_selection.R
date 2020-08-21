@@ -8,9 +8,9 @@
 #'   Overfitting method
 #' @param Kernel A real function. The kernel.
 #' @param data A double vector of the sample data to use.
+#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param lower A double vector of length 1. The lowest bandwidth to test.
 #' @param upper A double vector of length 1. The greatest bandwidth to test.
-#' @param maxEval A double vector of length 1. The maximum number of function evaluations when integrating.
 #' @param ... Optional arguments for the criterion function.
 #' @return A double vector of length 1. The optimal bandwidth.
 #' @details Optional arguments and defaults for PCO: \cr \code{v = 1}, a
@@ -61,7 +61,6 @@ bandwidth_selection <- function(criterion_method,
 #' Getters for the bandwidth selection criteria.
 #'
 #' @return A list of functions. The list of bandwidth selection criteria provided by the package.
-#' @export
 bandwidth_selection_criteria <- function() {
   list(CV = get_criterion_CV,
        GL = get_criterion_GL,
